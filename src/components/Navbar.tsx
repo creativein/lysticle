@@ -54,8 +54,14 @@ const Navbar = () => {
             <a href="#faq" className="text-gray-700 hover:text-violet-700 font-medium transition-colors">
               FAQ
             </a>
-            <Button variant="primary" size="sm">
-              Get Started
+            <Button 
+              variant="primary" 
+              size="sm" 
+              onClick={() => {
+                document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Book a Call
             </Button>
           </nav>
 
@@ -88,8 +94,11 @@ const Navbar = () => {
               FAQ
             </a>
             <div className="pt-2">
-              <Button variant="primary" fullWidth onClick={() => navigate('/onboard')}>
-                Get Started
+              <Button variant="primary" fullWidth onClick={() => {
+                document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
+                toggleMenu();
+              }}>
+                Book a Call
               </Button>
             </div>
           </div>

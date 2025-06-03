@@ -5,7 +5,7 @@ import Button from '../ui/Button';
 
 const CTASection = () => {
   return (
-    <section className="py-20 bg-gradient-to-r from-violet-600 to-blue-600 text-white">
+    <section id="cta" className="py-20 bg-gradient-to-r from-violet-600 to-blue-600 text-white">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -106,7 +106,7 @@ const CTASection = () => {
                   />
                 </div>
                 
-                <Button type="submit" variant="primary" fullWidth className="bg-white text-violet-600 border-white hover:bg-violet-50 hover:text-white">
+                <Button type="submit" variant="primary" fullWidth className="bg-white !text-violet-600 border-white hover:bg-violet-50 hover:!text-white">
                   Schedule Consultation
                 </Button>
               </form>
