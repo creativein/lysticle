@@ -84,12 +84,12 @@ const CTASection = () => {
 
                 <div>
                   <label htmlFor="company" className="block text-sm font-medium mb-1 text-violet-100">
-                    Company Name
+                    Phone
                   </label>
                   <input
                     type="text"
-                    id="company"
-                    placeholder="Your Company"
+                    id="phone"
+                    placeholder="xxx-xxx-xxxx"
                     className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 text-white placeholder-violet-200"
                   />
                 </div>
@@ -107,7 +107,7 @@ const CTASection = () => {
                 </div>
                 
                 <Button type="submit" variant="primary" fullWidth className="bg-white !text-violet-600 border-white hover:bg-violet-50 hover:!text-white">
-                  Schedule Consultation
+                  Request Free Consultation
                 </Button>
               </form>
               

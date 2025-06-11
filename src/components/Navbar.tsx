@@ -61,7 +61,7 @@ const Navbar = () => {
                 document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              Book a Call
+              Request a Call
             </Button>
           </nav>
 
@@ -98,7 +98,7 @@ const Navbar = () => {
                 document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
                 toggleMenu();
               }}>
-                Book a Call
+                Request a Call
               </Button>
             </div>
           </div>
