@@ -6,6 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lysticle | Lyst it. Launch it.</title>
     <meta name="description" content="Create high-converting listicles in minutes with Lysticle. No coding required." />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://www.xverify.com/sharedjs/jquery.xverify.plugin.js"></script>
+    <script>
+      // Debug script to check if xverify loads
+      $(document).ready(function() {
+        console.log('jQuery loaded:', typeof $ !== 'undefined');
+        console.log('jQuery.fn.xverifyEmail available:', typeof $.fn.xverifyEmail !== 'undefined');
+        console.log('jQuery.fn.xverifyPhone available:', typeof $.fn.xverifyPhone !== 'undefined');
+        
+        if (typeof $.fn.xverifyEmail === 'undefined' || typeof $.fn.xverifyPhone === 'undefined') {
+          console.warn('XVerify plugins not loaded properly');
+        }
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
