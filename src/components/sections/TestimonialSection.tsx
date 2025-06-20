@@ -40,44 +40,25 @@ const TestimonialCard = ({ content, author, role, company, image, delay }: Testi
 const TestimonialSection = () => {
   const testimonials = [
     {
-      content: "Lysticle has transformed the way we create content. Our conversion rates have increased by 43% since we started using their listicle templates.",
+      content: "Our traffic increased 28.5% after switching to Lysticle's SEO-optimized templates. The built-in affiliate integration helped us triple our revenue from content marketing.",
       author: "Sarah Johnson",
-      role: "Marketing Director",
-      company: "TechGrowth",
+      role: "Content Marketing Manager",
+      company: "GrowthHackers",
       image: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
     },
     {
-      content: "The analytics tools are incredible. I can now see exactly which items in my lists are performing well and optimize accordingly.",
+      content: "The analytics dashboard is a game-changer. I can see exactly which products in my listicles are driving clicks and conversions. My affiliate commissions have doubled!",
       author: "James Wilson",
-      role: "Content Creator",
-      company: "StyleBlog",
+      role: "Affiliate Marketer",
+      company: "TechReviews Pro",
       image: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
     },
     {
-      content: "As a non-technical person, I was amazed at how easy it was to create beautiful, SEO-optimized listicles that actually convert.",
+      content: "Lysticle's viral templates helped my beauty product roundups go viral on Pinterest and Instagram. One listicle generated 50K+ social shares and $12K in sales!",
       author: "Emily Chen",
-      role: "Founder",
-      company: "BeautyEssentials",
+      role: "Beauty Blogger",
+      company: "GlowUp Beauty",
       image: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-    }
-  ];
-
-  const clientLogos = [
-    {
-      name: "Google",
-      url: "https://images.pexels.com/photos/5063385/pexels-photo-5063385.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-    },
-    {
-      name: "Gmail",
-      url: "https://images.pexels.com/photos/5833772/pexels-photo-5833772.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-    },
-    {
-      name: "Facebook",
-      url: "https://images.pexels.com/photos/5063440/pexels-photo-5063440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-    },
-    {
-      name: "Twitter",
-      url: "https://images.pexels.com/photos/5063474/pexels-photo-5063474.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
     }
   ];
 
@@ -92,10 +73,10 @@ const TestimonialSection = () => {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-            Loved by content creators <span className="text-violet-600">worldwide</span>
+            Join thousands driving <span className="text-violet-600">real results</span>
           </h2>
           <p className="text-xl text-gray-600">
-            See what our customers are saying about how Lysticle has transformed their content strategy.
+            See how affiliate marketers, content creators, and brands are turning clicks into conversions with Lysticle.com.
           </p>
         </motion.div>
         
@@ -112,30 +93,6 @@ const TestimonialSection = () => {
             />
           ))}
         </div>
-        
-        {/* <motion.div 
-          className="mt-16 text-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex flex-wrap justify-center items-center gap-12 opacity-80">
-            {clientLogos.map((logo, index) => (
-              <motion.img
-                key={index}
-                src={logo.url}
-                alt={`${logo.name} logo`}
-                className="h-8 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              />
-            ))}
-          </div>
-        </motion.div> */}
       </div>
     </section>
   );

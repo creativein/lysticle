@@ -266,27 +266,27 @@ const CTASection = () => {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Ready to transform your content strategy?
+                Ready to turn clicks into conversions?
               </h2>
               <p className="text-lg md:text-xl mb-8 text-violet-100">
-                Book a free consultation with our content strategy experts and discover how Lysticle can help you create high-converting listicles.
+                Join thousands of affiliate marketers, content creators, and brands driving real results. Book a free consultation and see how Lysticle.com can boost your traffic, engagement, and sales.
               </p>
               <div className="space-y-4 mb-8">
                 <div className="flex items-center">
                   <Clock size={20} className="text-violet-200 mr-3" />
-                  <span className="text-violet-100">30-minute strategy session</span>
+                  <span className="text-violet-100">See results in 30 days or less</span>
                 </div>
                 <div className="flex items-center">
                   <Users size={20} className="text-violet-200 mr-3" />
-                  <span className="text-violet-100">1-on-1 with a content expert</span>
+                  <span className="text-violet-100">Personalized strategy session</span>
                 </div>
                 <div className="flex items-center">
                   <Calendar size={20} className="text-violet-200 mr-3" />
-                  <span className="text-violet-100">Flexible scheduling</span>
+                  <span className="text-violet-100">No commitment required</span>
                 </div>
               </div>
               <Button variant="outline" size="lg" className="bg-white text-violet-600 border-white hover:bg-violet-50">
-                Book Your Free Consultation
+                Start Creating Viral Content
                 <ArrowRight size={20} className="ml-2" />
               </Button>
             </motion.div>
@@ -300,10 +300,10 @@ const CTASection = () => {
               className="bg-white/10 backdrop-blur-sm p-8 rounded-xl"
             >
               <h3 className="text-2xl font-bold mb-4">
-                Schedule a Consultation
+                Get Started Today
               </h3>
               <p className="mb-6 text-violet-100">
-                Tell us about your business and we'll show you how Lysticle can help you achieve your goals.
+                Tell us about your goals and we'll show you how to create high-converting listicles that drive real results.
               </p>
               
               <form className="space-y-4" onSubmit={handleSubmit}>
@@ -388,7 +388,7 @@ const CTASection = () => {
                     rows={3}
                     value={formData.message}
                     onChange={handleInputChange}
-                    placeholder="Tell us about your content goals..."
+                    placeholder="What type of content do you want to create? (Product reviews, top-10 lists, how-to guides, etc.)"
                     className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 text-white placeholder-violet-200"
                   />
                 </div>
@@ -402,7 +402,7 @@ const CTASection = () => {
                 >
                   {(validationStatus.email.isChecking || validationStatus.phone.isChecking) 
                     ? 'Validating...' 
-                    : 'Request Free Consultation'
+                    : 'Get My Free Strategy Session'
                   }
                 </Button>
               </form>

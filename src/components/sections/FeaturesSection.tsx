@@ -1,14 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
+  Search, 
+  Target, 
+  MousePointer, 
+  BarChart3, 
+  ShoppingCart, 
   Zap, 
-  Layout, 
-  ListChecks, 
-  ShoppingBag, 
-  Sparkles, 
-  BarChart, 
-  Smartphone, 
-  Search 
+  Globe, 
+  TrendingUp 
 } from 'lucide-react';
 
 interface FeatureProps {
@@ -39,44 +39,44 @@ const Feature = ({ icon, title, description, delay }: FeatureProps) => {
 const FeaturesSection = () => {
   const features = [
     {
-      icon: <Zap size={24} />,
-      title: "Instant Site Builder",
-      description: "One-click setup for landing pages and SEO-optimized listicles with a drag-and-drop editor for non-technical users."
-    },
-    {
-      icon: <Layout size={24} />,
-      title: "Listicle Templates",
-      description: "Pre-built, high-converting templates tailored for different industries like beauty, tech, SaaS, fashion, and more."
-    },
-    {
-      icon: <ShoppingBag size={24} />,
-      title: "Offer Integration",
-      description: "Easily embed product offers, affiliate links, coupon codes, or promotional content with Shopify and Amazon integrations."
-    },
-    {
-      icon: <Sparkles size={24} />,
-      title: "Smart Content Engine",
-      description: "AI-assisted title and copy generation with auto-populated product blurbs, images, and pricing."
-    },
-    {
-      icon: <BarChart size={24} />,
-      title: "Analytics & A/B Testing",
-      description: "Real-time engagement metrics and built-in split testing for headlines and order of list items."
-    },
-    {
-      icon: <Smartphone size={24} />,
-      title: "Mobile-First Design",
-      description: "Fully responsive with AMP support for lightning-fast load times on all devices and screen sizes."
-    },
-    {
       icon: <Search size={24} />,
-      title: "SEO & Sharing Tools",
-      description: "Schema markup for featured snippets and built-in social sharing buttons with Open Graph tag generation."
+      title: "SEO-Boosted Layouts",
+      description: "Rank faster with our optimized templates featuring schema markup, meta tags, and structure designed for featured snippets and higher search rankings."
     },
     {
-      icon: <ListChecks size={24} />,
-      title: "Monetization Ready",
-      description: "Easy affiliate tracking and embed newsletter forms or lead magnets to maximize your revenue."
+      icon: <Target size={24} />,
+      title: "Affiliate & Ad Integration",
+      description: "Built-in affiliate link management, product embeds, coupon codes, and ad placements. Seamlessly integrate with Amazon, Shopify, and major affiliate networks."
+    },
+    {
+      icon: <MousePointer size={24} />,
+      title: "One-Click Publishing",
+      description: "Publish directly to your blog, social media, or standalone landing pages. Multi-platform sharing with automatic Open Graph tags and social optimization."
+    },
+    {
+      icon: <BarChart3 size={24} />,
+      title: "Analytics Dashboard",
+      description: "Track clicks, conversions, and engagement in real-time. See which list items perform best and optimize your content for maximum revenue."
+    },
+    {
+      icon: <ShoppingCart size={24} />,
+      title: "Perfect for eCommerce",
+      description: "Ideal for product reviews, comparison sites, and buying guides. Built-in product cards, pricing displays, and 'Buy Now' button integration."
+    },
+    {
+      icon: <Zap size={24} />,
+      title: "Smart Content Engine",
+      description: "AI-powered title generation, auto-populated product information, and intelligent content suggestions to create engaging listicles faster."
+    },
+    {
+      icon: <Globe size={24} />,
+      title: "Mobile-First & Fast",
+      description: "Lightning-fast load times with AMP support and mobile-optimized designs that keep readers engaged and reduce bounce rates."
+    },
+    {
+      icon: <TrendingUp size={24} />,
+      title: "Viral Content Templates",
+      description: "Proven templates for top-10 lists, product roundups, how-to guides, and comparison posts that drive social shares and backlinks."
     }
   ];
 
@@ -91,10 +91,10 @@ const FeaturesSection = () => {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-            Everything you need to create <span className="text-violet-600">high-converting</span> listicles
+            Why <span className="text-violet-600">Lysticle.com?</span>
           </h2>
           <p className="text-xl text-gray-600">
-            Our platform provides all the tools to create, publish, and monetize listicles without any technical skills.
+            Stop publishing static content. Start driving results with dynamic listicles your audience loves to click, share, and convert on.
           </p>
         </motion.div>
         

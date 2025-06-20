@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, X } from 'lucide-react';
 import Button from '../ui/Button';
@@ -74,16 +73,17 @@ const PricingSection = () => {
     {
       name: "Basic",
       price: "29",
-      description: "Perfect for individual content creators",
+      description: "Perfect for bloggers and content creators",
       features: [
-        "3 listicle sites",
-        "5 templates",
-        "Basic analytics",
-        "Mobile-responsive design",
+        "5 listicle sites",
+        "10+ viral templates",
+        "Basic SEO optimization",
+        "Social sharing tools",
+        "Basic analytics dashboard",
         "Email support"
       ],
       excluded: [
-        "A/B testing",
+        "Advanced affiliate integration",
         "Custom domain",
         "Advanced SEO tools",
         "Priority support"
@@ -93,15 +93,16 @@ const PricingSection = () => {
     {
       name: "Pro",
       price: "79",
-      description: "Ideal for growing businesses",
+      description: "Ideal for affiliate marketers and growing brands",
       features: [
-        "10 listicle sites",
-        "20+ templates",
-        "Advanced analytics",
-        "A/B testing",
-        "Custom domain",
-        "Advanced SEO tools",
-        "Priority support"
+        "25 listicle sites",
+        "50+ conversion templates",
+        "Advanced SEO & schema markup",
+        "Full affiliate network integration",
+        "Custom domain support",
+        "Advanced analytics & A/B testing",
+        "Priority support",
+        "Social media automation"
       ],
       excluded: [
         "White-label solution",
@@ -112,17 +113,19 @@ const PricingSection = () => {
     {
       name: "Business",
       price: "199",
-      description: "For agencies and large teams",
+      description: "For agencies and enterprise teams",
       features: [
         "Unlimited listicle sites",
-        "All templates",
-        "Advanced analytics",
-        "A/B testing",
-        "Custom domain",
-        "Advanced SEO tools",
+        "All premium templates",
+        "Enterprise SEO suite",
+        "Full affiliate network integration",
+        "Custom domain support",
+        "Advanced analytics & A/B testing",
         "Priority support",
+        "Social media automation",
         "White-label solution",
-        "API access"
+        "API access",
+        "Team collaboration tools"
       ],
       isPopular: false
     }
@@ -139,10 +142,10 @@ const PricingSection = () => {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-            Simple, transparent <span className="text-violet-600">pricing</span>
+            Choose your path to <span className="text-violet-600">conversion success</span>
           </h2>
           <p className="text-xl text-gray-600">
-            Choose the plan that's right for your business. All plans include a 14-day free trial.
+            Start driving traffic, engagement, and sales with proven listicle templates. All plans include everything you need to create viral content.
           </p>
         </motion.div>
         

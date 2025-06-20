@@ -50,28 +50,28 @@ const FAQItem = ({ question, answer, isOpen, toggleOpen, delay }: FAQItemProps) 
 const FAQSection = () => {
   const faqs = [
     {
-      question: "How does the 14-day free trial work?",
-      answer: "You can sign up for Lysticle without providing any payment information. You'll have full access to all features for 14 days. Before your trial ends, we'll send you a reminder to upgrade to a paid plan. If you don't upgrade, your account will be downgraded to a limited free version."
+      question: "How quickly can I see results with Lysticle.com?",
+      answer: "Most users see increased traffic within 2-4 weeks of publishing their first listicles. Our SEO-optimized templates are designed to rank faster on Google, and the viral-ready formats often generate social shares immediately upon publication."
     },
     {
-      question: "Do I need technical skills to use Lysticle?",
-      answer: "Not at all! Lysticle is designed for non-technical users. Our drag-and-drop editor and pre-built templates make it easy to create beautiful listicles without any coding knowledge."
+      question: "What makes Lysticle different from regular blog posts?",
+      answer: "Listicles have 73% higher engagement rates than traditional blog posts. Our platform specializes in creating scannable, shareable content with built-in affiliate integration, social sharing optimization, and conversion-focused layouts that turn readers into buyers."
     },
     {
-      question: "Can I use my own domain name?",
-      answer: "Yes, on the Pro and Business plans, you can connect your own custom domain. We provide simple instructions to help you set up the DNS records required."
+      question: "Can I track which products are generating the most revenue?",
+      answer: "Absolutely! Our analytics dashboard shows click-through rates, conversion data, and revenue attribution for each product in your listicles. You can see exactly which items in your top-10 lists are driving the most affiliate commissions or sales."
     },
     {
-      question: "How do I integrate product offers and affiliate links?",
-      answer: "Lysticle makes it easy to add product offers and affiliate links. You can either use our direct integrations with platforms like Shopify and Amazon, or manually add your affiliate links to any product featured in your listicles."
+      question: "Do I need to be tech-savvy to create high-converting listicles?",
+      answer: "Not at all! Our intuitive editor and smart templates do the heavy lifting. Just add your products, write short descriptions, and our system handles the SEO optimization, social meta tags, and mobile responsiveness automatically."
     },
     {
-      question: "What analytics does Lysticle provide?",
-      answer: "We provide comprehensive analytics including page views, time on page, click-through rates on each list item, conversion rates, and more. Pro and Business plans include A/B testing capabilities to optimize your content for maximum conversions."
+      question: "How does the affiliate integration work?",
+      answer: "Lysticle integrates directly with Amazon Associates, ShareASale, Commission Junction, and 50+ other affiliate networks. Simply connect your accounts, and our system will automatically insert your affiliate links and track performance across all your listicles."
     },
     {
-      question: "Can I export my data?",
-      answer: "Yes, on all paid plans you can export your analytics data in CSV format. Business plan users also have access to our API for more advanced data integration needs."
+      question: "Can my listicles go viral on social media?",
+      answer: "Yes! Our templates are designed with viral mechanics in mind - compelling headlines, shareable formats, and social-optimized images. Many of our users have achieved 10K+ shares on platforms like Pinterest, Facebook, and Instagram."
     }
   ];
   

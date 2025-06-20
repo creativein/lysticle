@@ -20,15 +20,15 @@ const HeroSection = () => {
           >
             <div className="inline-flex items-center px-4 py-2 bg-violet-100 text-violet-800 rounded-full mb-6">
               <Sparkles size={16} className="mr-2" />
-              <span className="text-sm font-medium">Introducing Lysticle</span>
+              <span className="text-sm font-medium">Turn Clicks Into Conversions</span>
             </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight text-gray-900">
-              Lyst it. <span className="text-violet-600">Launch it.</span> Convert visitors into customers.
+              <span className="text-violet-600">Listicle Magic</span> That Drives Real Results
             </h1>
             
             <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0">
-              Transform your ideas into high-converting listicles in minutes. Create, publish, and monetize content without coding skills.
+              Boost traffic, engagement, and sales with high-converting, SEO-friendly listicles. Create viral top-10s, product roundups, and how-to guides in minutes—all optimized for social sharing and Google rankings.
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
@@ -43,7 +43,7 @@ const HeroSection = () => {
             </div>
             
             <p className="mt-6 text-gray-500 text-sm">
-              No credit card required. 14-day free trial.
+              No credit card required. Start creating viral content today.
             </p>
           </motion.div>
           
@@ -73,7 +73,7 @@ const HeroSection = () => {
                       <div className="w-3 h-3 rounded-full bg-green-400" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold">Top 10 Products Every Home Needs</h3>
+                  <h3 className="text-xl font-bold">Top 10 Products That Actually Made Me Money</h3>
                 </div>
                 
                 <div className="p-6">
@@ -98,7 +98,7 @@ const HeroSection = () => {
                       <span>Published</span>
                     </div>
                     <div className="bg-violet-100 text-violet-800 px-3 py-1 rounded-full text-sm font-medium">
-                      1,248 views
+                      $2,847 earned
                     </div>
                   </div>
                 </div>
