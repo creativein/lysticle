@@ -3,9 +3,20 @@ import { motion } from 'framer-motion';
 import { ArrowRight, List, Sparkles, Rocket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../ui/Button';
+import { utmService } from '../../services/utmService';
 
 const HeroSection = () => {
   const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    // Get UTM parameters from service
+    const utmParams = utmService.getUTMParams();
+    
+    // Navigate to onboard page with UTM data as state
+    navigate('/onboard', { 
+      state: { utmParams }
+    });
+  };
 
   return (
     <section className="pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden">
@@ -32,7 +43,7 @@ const HeroSection = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-              <Button size="lg" onClick={() => navigate('/onboard')}>
+              <Button size="lg" onClick={handleGetStarted}>
                 Get Started Free
                 <ArrowRight size={20} className="ml-2" />
               </Button>

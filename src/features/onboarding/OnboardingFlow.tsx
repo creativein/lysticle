@@ -5,8 +5,13 @@ import ContactDetailsForm, { ContactFormData } from './ContactDetailsForm';
 import DomainConfigForm, { DomainFormData } from './DomainConfigForm';
 import OnboardingSuccess from './OnboardingSuccess';
 import InputMask from 'react-input-mask'; // Add this import if not already present
+import { UTMParams } from '../../services/utmService';
 
-const OnboardingFlow: React.FC = () => {
+interface OnboardingFlowProps {
+  utmParams?: UTMParams;
+}
+
+const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ utmParams = {} }) => {
   const [step, setStep] = useState(1);
   const [companyData, setCompanyData] = useState<CompanyFormData>({
     companyName: '',
@@ -214,6 +219,16 @@ const OnboardingFlow: React.FC = () => {
                 isCustomDomain: !!domainData.customDomain,
               }}
               onDashboardRedirect={handleDashboardRedirect}
+              userData={{
+                firstName: contactData.firstName,
+                lastName: contactData.lastName,
+                email: contactData.email,
+                phoneNumber: contactData.phoneNumber,
+                companyName: companyData.companyName,
+                industry: companyData.industry,
+                domain: domainData.customDomain || `${domainData.subdomain}.example.com`
+              }}
+              utmParams={utmParams}
             />
           </OnboardingLayout>
         );

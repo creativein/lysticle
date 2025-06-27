@@ -1,6 +1,18 @@
-import React from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 import Button from '../../components/ui/Button';
+import { databaseService } from '../../services/databaseService';
+import { UTMParams } from '../../services/utmService';
+
+interface UserData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string;
+  companyName: string;
+  industry?: string;
+  domain?: string;
+}
 
 type OnboardingSuccessProps = {
   domainInfo: {
@@ -8,19 +20,55 @@ type OnboardingSuccessProps = {
     isCustomDomain: boolean;
   };
   onDashboardRedirect: () => void;
+  userData: UserData;
+  utmParams: UTMParams;
 };
 
 const OnboardingSuccess: React.FC<OnboardingSuccessProps> = ({
   domainInfo,
   onDashboardRedirect,
+  userData,
+  utmParams
 }) => {
-  const handleGoToDashboard = () => {
-    // Open the user's domain in a new tab
-    const url = `https://${domainInfo.domain}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<{success?: boolean; message?: string}>({});
+
+  const handleGoToDashboard = async () => {
+    // First, try to save the conversion data
+    setIsSaving(true);
     
-    // Also call the original redirect handler for any additional logic
-    onDashboardRedirect();
+    try {
+      const result = await databaseService.saveConversion({
+        userData,
+        utmData: utmParams,
+        conversionType: 'onboarding_complete'
+      });
+      
+      setSaveStatus({
+        success: result.success,
+        message: result.message
+      });
+      
+      // Open the user's domain in a new tab
+      const url = `https://${domainInfo.domain}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+      
+      // Also call the original redirect handler for any additional logic
+      onDashboardRedirect();
+    } catch (error) {
+      console.error('Failed to save conversion data:', error);
+      setSaveStatus({
+        success: false,
+        message: 'Failed to save data, but redirecting you to dashboard'
+      });
+      
+      // Still continue with the redirect even if saving failed
+      const url = `https://${domainInfo.domain}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+      onDashboardRedirect();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -63,13 +111,30 @@ const OnboardingSuccess: React.FC<OnboardingSuccessProps> = ({
         </div>
       )}
       
+      {saveStatus.message && (
+        <div className={`rounded-lg p-4 max-w-md mx-auto border text-left ${
+          saveStatus.success ? 'bg-green-50 border-green-100 text-green-700' : 'bg-red-50 border-red-100 text-red-700'
+        }`}>
+          <p>{saveStatus.message}</p>
+        </div>
+      )}
+      
       <div className="pt-4">
         <Button
           variant="primary"
           size="lg"
           onClick={handleGoToDashboard}
+          isLoading={isSaving}
+          disabled={isSaving}
         >
-          Go to Dashboard
+          {isSaving ? (
+            <>
+              <Loader2 className="animate-spin mr-2 h-4 w-4" />
+              Saving...
+            </>
+          ) : (
+            'Go to Dashboard'
+          )}
         </Button>
       </div>
     </div>
