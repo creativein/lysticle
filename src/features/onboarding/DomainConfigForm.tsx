@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../../components/ui/Button';
 import { Check, Loader2, RefreshCw } from 'lucide-react';
 import { dnsService } from '../../services/dnsService';
@@ -17,7 +17,7 @@ export type DomainFormData = {
   customDomain: string;
   usesCustomDomain: boolean;
   isDNSVerified?: boolean;
-  // email?: string; // optional: if you want to keep it in the form data
+  email?: string; // optional: if you want to keep it in the form data
 };
 
 const REQUIRED_A_RECORD = import.meta.env.VITE_REQUIRED_A_RECORD;
@@ -28,13 +28,15 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
   initialData = {
     subdomain: '',
     customDomain: '',
-    usesCustomDomain: false,
+    usesCustomDomain: true,
+    isDNSVerified: false,
+    email: ''
   },
   email, // <-- receive email here
 }) => {
   const [formData, setFormData] = useState<DomainFormData>({
     ...initialData,
-    // email, // optional: if you want to keep it in the form data
+    email: email || initialData.email || '', // always set from prop
   });
   const [errors, setErrors] = useState<Partial<DomainFormData>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -76,10 +78,23 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
     }
   };
 
+  // Keep formData.email in sync with prop email
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      email: email || '',
+    }));
+  }, [email]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
+    // Always keep email in sync with prop
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+      email: email || '', // force email from prop
+    }));
+
     if (errors[name as keyof DomainFormData]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
