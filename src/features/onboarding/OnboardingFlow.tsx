@@ -4,6 +4,7 @@ import CompanyDetailsForm, { CompanyFormData } from './CompanyDetailsForm';
 import ContactDetailsForm, { ContactFormData } from './ContactDetailsForm';
 import DomainConfigForm, { DomainFormData } from './DomainConfigForm';
 import OnboardingSuccess from './OnboardingSuccess';
+import InputMask from 'react-input-mask'; // Add this import if not already present
 
 const OnboardingFlow: React.FC = () => {
   const [step, setStep] = useState(1);
@@ -26,6 +27,12 @@ const OnboardingFlow: React.FC = () => {
     usesCustomDomain: false,
   });
 
+  // Add validation status for email and phone
+  const [validationStatus, setValidationStatus] = useState({
+    email: { isValid: null as boolean | null, message: '', isChecking: false },
+    phone: { isValid: null as boolean | null, message: '', isChecking: false }
+  });
+
   const handleCompanySubmit = (data: CompanyFormData) => {
     setCompanyData(data);
     setStep(2);
@@ -44,6 +51,110 @@ const OnboardingFlow: React.FC = () => {
   const handleDashboardRedirect = () => {
     // Additional logic can be added here (analytics, cleanup, etc.)
     console.log('User completed onboarding and navigated to dashboard');
+  };
+
+  // Email validation logic (copied from CTASection)
+  const validateEmail = (email: string) => {
+    if (!email) {
+      setValidationStatus(prev => ({
+        ...prev,
+        email: { isValid: null, message: '', isChecking: false }
+      }));
+      return;
+    }
+    setValidationStatus(prev => ({
+      ...prev,
+      email: { ...prev.email, isChecking: true }
+    }));
+    if (window.$ && window.$.fn && window.$.fn.xverifyEmail) {
+      try {
+        window.$('#onboarding-email').xverifyEmail({
+          apikey: '1014891-140AFB3A',
+          callback: function(response: { status: string; message?: string }) {
+            const isValid = response.status === 'valid';
+            setValidationStatus(prev => ({
+              ...prev,
+              email: {
+                isValid,
+                message: isValid ? 'Email verified' : response.message || 'Invalid email',
+                isChecking: false
+              }
+            }));
+          }
+        });
+      } catch (error) {
+        basicEmailValidation(email);
+      }
+    } else {
+      basicEmailValidation(email);
+    }
+  };
+
+  const basicEmailValidation = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValid = emailRegex.test(email);
+    setTimeout(() => {
+      setValidationStatus(prev => ({
+        ...prev,
+        email: {
+          isValid,
+          message: isValid ? 'Email format valid' : 'Invalid email format',
+          isChecking: false
+        }
+      }));
+    }, 500);
+  };
+
+  // Phone validation logic (copied from CTASection)
+  const validatePhone = (phone: string) => {
+    if (!phone) {
+      setValidationStatus(prev => ({
+        ...prev,
+        phone: { isValid: null, message: '', isChecking: false }
+      }));
+      return;
+    }
+    setValidationStatus(prev => ({
+      ...prev,
+      phone: { ...prev.phone, isChecking: true }
+    }));
+    if (window.$ && window.$.fn && window.$.fn.xverifyPhone) {
+      try {
+        window.$('#onboarding-phone').xverifyPhone({
+          apikey: 'demo',
+          callback: function(response: { status: string; message?: string }) {
+            const isValid = response.status === 'valid';
+            setValidationStatus(prev => ({
+              ...prev,
+              phone: {
+                isValid,
+                message: isValid ? 'Phone verified' : response.message || 'Invalid phone number',
+                isChecking: false
+              }
+            }));
+          }
+        });
+      } catch (error) {
+        basicPhoneValidation(phone);
+      }
+    } else {
+      basicPhoneValidation(phone);
+    }
+  };
+
+  const basicPhoneValidation = (phone: string) => {
+    const cleanPhone = phone.replace(/[\s-()_]/g, '');
+    const isValid = /^\d{10}$/.test(cleanPhone);
+    setTimeout(() => {
+      setValidationStatus(prev => ({
+        ...prev,
+        phone: {
+          isValid,
+          message: isValid ? 'Phone format valid' : 'Please enter a valid 10-digit phone number',
+          isChecking: false
+        }
+      }));
+    }, 500);
   };
 
   const renderStep = () => {
@@ -68,7 +179,10 @@ const OnboardingFlow: React.FC = () => {
             <ContactDetailsForm 
               onNext={handleContactSubmit} 
               onBack={() => setStep(1)} 
-              initialData={contactData} 
+              initialData={contactData}
+              validationStatus={validationStatus}
+              validateEmail={validateEmail}
+              validatePhone={validatePhone}
             />
           </OnboardingLayout>
         );
@@ -82,7 +196,8 @@ const OnboardingFlow: React.FC = () => {
             <DomainConfigForm 
               onNext={handleDomainSubmit} 
               onBack={() => setStep(2)} 
-              initialData={domainData} 
+              initialData={domainData}
+              email={contactData.email} // <-- pass email from ContactDetailsForm
             />
           </OnboardingLayout>
         );

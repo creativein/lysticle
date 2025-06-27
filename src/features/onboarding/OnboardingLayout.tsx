@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { CircleUser, BarChart3, Building2, Globe } from 'lucide-react';
+import { CircleUser, Building2, Globe } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/Card';
 
 type OnboardingLayoutProps = {

@@ -9,6 +9,7 @@ type DomainConfigFormProps = {
   onNext: (data: DomainFormData) => void;
   onBack: () => void;
   initialData?: DomainFormData;
+  email: string; // <-- add this prop to receive email from ContactDetailsForm
 };
 
 export type DomainFormData = {
@@ -16,7 +17,7 @@ export type DomainFormData = {
   customDomain: string;
   usesCustomDomain: boolean;
   isDNSVerified?: boolean;
-  email?: string;
+  // email?: string; // optional: if you want to keep it in the form data
 };
 
 const REQUIRED_A_RECORD = import.meta.env.VITE_REQUIRED_A_RECORD;
@@ -27,12 +28,14 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
   initialData = {
     subdomain: '',
     customDomain: '',
-    usesCustomDomain: true,
-    isDNSVerified: false,
-    email: '',
+    usesCustomDomain: false,
   },
+  email, // <-- receive email here
 }) => {
-  const [formData, setFormData] = useState<DomainFormData>(initialData);
+  const [formData, setFormData] = useState<DomainFormData>({
+    ...initialData,
+    // email, // optional: if you want to keep it in the form data
+  });
   const [errors, setErrors] = useState<Partial<DomainFormData>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isVerifyingDNS, setIsVerifyingDNS] = useState(false);
@@ -176,6 +179,25 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
+  
+        <div className="bg-amber-50 p-4 rounded-md border border-amber-100">
+          <p className="text-sm text-amber-800 font-medium mb-2">
+            To verify your domain, add these DNS records:
+          </p>
+          <div className="bg-white p-3 rounded border border-amber-200 font-mono text-sm">
+            {requiredRecords.map((record, index) => (
+              <React.Fragment key={`dns-record-${index}`}>
+                <p className="mb-2">Type: <span className="text-amber-700">{record.type}</span></p>
+                <p className="mb-2">Host: <span className="text-amber-700">{record.host}</span></p>
+                <p className={index < requiredRecords.length - 1 ? "mb-2" : ""}>
+                  Value: <span className="text-amber-700">{record.value}</span>
+                </p>
+                {index < requiredRecords.length - 1 && <hr className="my-2 border-amber-100" />}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+
         <div className="space-y-2">
           <label htmlFor="customDomain" className="block text-sm font-medium text-gray-700">
             Custom Domain<span className="text-red-500 ml-1">*</span>
@@ -219,29 +241,8 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
           <p className="text-sm text-gray-500">Use your own domain for your application</p>
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email<span className="text-red-500 ml-1">*</span>
-          </label>
-          <div className="relative">
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="your@email.com"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full rounded-md border ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
-              } bg-white px-3 py-2 text-sm shadow-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500`}
-            />
-          </div>
-          {errors.email && (
-            <p className="text-sm text-red-500 mt-1">{errors.email}</p>
-          )}
-          <p className="text-sm text-gray-500">We'll use this email for deployment notifications</p>
-        </div>
+        {/* Email field is now hidden */}
+        <input type="hidden" name="email" value={email} />
         
         {formData.isDNSVerified && (
           <div className="bg-green-50 p-4 rounded-md border border-green-100">
@@ -253,24 +254,6 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
             </div>
           </div>
         )}
-        
-        <div className="bg-amber-50 p-4 rounded-md border border-amber-100">
-          <p className="text-sm text-amber-800 font-medium mb-2">
-            To verify your domain, add these DNS records:
-          </p>
-          <div className="bg-white p-3 rounded border border-amber-200 font-mono text-sm">
-            {requiredRecords.map((record, index) => (
-              <React.Fragment key={`dns-record-${index}`}>
-                <p className="mb-2">Type: <span className="text-amber-700">{record.type}</span></p>
-                <p className="mb-2">Host: <span className="text-amber-700">{record.host}</span></p>
-                <p className={index < requiredRecords.length - 1 ? "mb-2" : ""}>
-                  Value: <span className="text-amber-700">{record.value}</span>
-                </p>
-                {index < requiredRecords.length - 1 && <hr className="my-2 border-amber-100" />}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
         
         {deploymentStatus?.success && (
           <div className="bg-green-50 p-4 rounded-md border border-green-100">
