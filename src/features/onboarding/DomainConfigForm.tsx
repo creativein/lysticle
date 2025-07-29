@@ -160,8 +160,6 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
         throw new Error(submissionResult.message);
       }
 
-      return;
-
       // Then trigger the Ansible deployment
       const deploymentResult = await ansibleService.triggerDeployment({
         domain: formData.customDomain,
