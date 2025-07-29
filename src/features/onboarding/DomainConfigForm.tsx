@@ -3,13 +3,19 @@ import Button from '../../components/ui/Button';
 import { Check, Loader2, RefreshCw } from 'lucide-react';
 import { dnsService } from '../../services/dnsService';
 import { ansibleService } from '../../services/ansibleService';
+import { onboardingService } from '../../services/onboardingService';
 import DeploymentProgress from './DeploymentProgress';
+
+import { CompanyFormData } from './CompanyDetailsForm';
+import { ContactFormData } from './ContactDetailsForm';
 
 type DomainConfigFormProps = {
   onNext: (data: DomainFormData) => void;
   onBack: () => void;
   initialData?: DomainFormData;
-  email: string; // <-- add this prop to receive email from ContactDetailsForm
+  email: string;
+  companyData?: CompanyFormData;
+  contactData?: ContactFormData;
 };
 
 export type DomainFormData = {
@@ -32,7 +38,9 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
     isDNSVerified: false,
     email: ''
   },
-  email, // <-- receive email here
+  email,
+  companyData,
+  contactData
 }) => {
   const [formData, setFormData] = useState<DomainFormData>({
     ...initialData,
@@ -130,7 +138,31 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
     setDeploymentStatus(null);
     
     try {
-      // Trigger the Ansible deployment
+      // First save the form data
+      const submissionResult = await onboardingService.submitOnboardingData(
+        companyData || {
+          companyName: '',
+          industry: '',
+          size: '',
+          website: ''
+        },
+        contactData || {
+          firstName: '',
+          lastName: '',
+          email: formData.email || '',
+          phoneNumber: '',
+          jobTitle: ''
+        },
+        formData
+      );
+
+      if (!submissionResult.success) {
+        throw new Error(submissionResult.message);
+      }
+
+      return;
+
+      // Then trigger the Ansible deployment
       const deploymentResult = await ansibleService.triggerDeployment({
         domain: formData.customDomain,
         email: formData.email || ''

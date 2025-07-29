@@ -1,0 +1,81 @@
+import { CompanyFormData } from '../features/onboarding/CompanyDetailsForm';
+import { ContactFormData } from '../features/onboarding/ContactDetailsForm';
+import { DomainFormData } from '../features/onboarding/DomainConfigForm';
+
+const PROXY_API_URL = import.meta.env.VITE_PROXY_API_URL;
+export interface OnboardingSubmissionData {
+  // Company Details
+  companyName: string;
+  industry: string;
+  companySize: string;
+  companyWebsite: string;
+
+  // Contact Details
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  jobTitle: string;
+
+  // Domain Configuration
+  customDomain: string;
+  isDNSVerified: boolean;
+}
+
+class OnboardingService {
+  private readonly API_URL = PROXY_API_URL;
+
+  async submitOnboardingData(
+    companyData: CompanyFormData,
+    contactData: ContactFormData,
+    domainData: DomainFormData
+  ): Promise<{ success: boolean; message: string }> {
+    try {
+      const formData: OnboardingSubmissionData = {
+        // Company Details
+        companyName: companyData.companyName,
+        industry: companyData.industry,
+        companySize: companyData.size,
+        companyWebsite: companyData.website,
+
+        // Contact Details
+        firstName: contactData.firstName,
+        lastName: contactData.lastName,
+        email: contactData.email,
+        phoneNumber: contactData.phoneNumber,
+        jobTitle: contactData.jobTitle,
+
+        // Domain Configuration
+        customDomain: domainData.customDomain,
+        isDNSVerified: domainData.isDNSVerified || false,
+      };
+
+      const response = await fetch(`${this.API_URL}/proxy.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ payload: {...formData}, service: 'onboarding'}),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit onboarding data');
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        message: 'Onboarding data submitted successfully',
+      };
+
+    } catch (error) {
+      console.error('Error submitting onboarding data:', error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to submit onboarding data',
+      };
+    }
+  }
+}
+
+export const onboardingService = new OnboardingService();

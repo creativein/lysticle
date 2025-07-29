@@ -1,5 +1,26 @@
 <?php
 
+// Database configuration
+define('DB_HOST', '66.94.124.95');
+define('DB_USER', 'root');
+define('DB_PASS', 'N5TMs5iR}>45');
+define('DB_NAME', 'lysticle_leads');
+
+// Initialize database connection
+function connectDB() {
+    try {
+        $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        if ($conn->connect_error) {
+            throw new Exception("Connection failed: " . $conn->connect_error);
+        }
+        return $conn;
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
+        exit;
+    }
+}
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
@@ -23,6 +44,62 @@ $service = $requestData['service'];
 $payload = $requestData['payload'];
 
 switch ($service) {
+    case 'onboarding':
+        try {
+            $conn = connectDB();
+            
+            // Prepare the SQL statement
+            $sql = "INSERT INTO onboardings (
+                company_name, industry, company_size, company_website,
+                first_name, last_name, email, phone, job_title,
+                domain
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            
+            // Bind parameters
+            // 'ssssssssss' represents the types of the 10 parameters (all strings)
+            $stmt->bind_param(
+                'ssssssssss',
+                $payload['companyName'],
+                $payload['industry'],
+                $payload['companySize'],
+                $payload['companyWebsite'],
+                $payload['firstName'],
+                $payload['lastName'],
+                $payload['email'],
+                $payload['phoneNumber'],
+                $payload['jobTitle'],
+                $payload['customDomain']
+            );
+            
+            // Execute the statement
+            if (!$stmt->execute()) {
+                throw new Exception("Execute failed: " . $stmt->error);
+            }
+            
+            $insertId = $stmt->insert_id;
+            $response = [
+                'success' => true, 
+                'message' => 'Data saved successfully',
+                'id' => $insertId
+            ];
+
+            echo json_encode($response);
+            $stmt->close();
+            $conn->close();
+            exit;
+            
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+            exit;
+        }
+        break;
+
     case 'siterelic':
         $url = 'https://api.siterelic.com/dnsrecord';
         $headers = [

@@ -198,6 +198,8 @@ const OnboardingFlow: React.FC = () => {
               onBack={() => setStep(2)} 
               initialData={domainData}
               email={contactData.email} // <-- pass email from ContactDetailsForm
+              companyData={companyData}
+              contactData={contactData}
             />
           </OnboardingLayout>
         );
