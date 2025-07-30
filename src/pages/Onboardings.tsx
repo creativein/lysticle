@@ -1,9 +1,9 @@
 import { ArrowLeft, ListChecks } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../components/ui/Button';
-import OnboardingFlow from '../features/onboarding/OnboardingFlow';
+import { OnboardingTable } from '../components/ui/OnboardingTable';
 
-const DemoPage = () => {
+const OnboardingsPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-blue-50">
       <nav className="border-b bg-white/50 backdrop-blur-sm">
@@ -20,9 +20,14 @@ const DemoPage = () => {
           </Link>
         </div>
       </nav>
-      <OnboardingFlow />
+      <main className="container mx-auto px-4 py-12">
+        <h1 className="text-3xl font-bold mb-6">Onboardings</h1>
+        <div className="mb-8">
+          <OnboardingTable />
+        </div>
+      </main>
     </div>
   );
 };
 
-export default DemoPage;
+export default OnboardingsPage;

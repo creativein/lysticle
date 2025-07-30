@@ -1,6 +1,7 @@
 import { CompanyFormData } from '../features/onboarding/CompanyDetailsForm';
 import { ContactFormData } from '../features/onboarding/ContactDetailsForm';
 import { DomainFormData } from '../features/onboarding/DomainConfigForm';
+import axios from 'axios';
 
 const PROXY_API_URL = import.meta.env.VITE_PROXY_API_URL;
 export interface OnboardingSubmissionData {
@@ -73,6 +74,33 @@ class OnboardingService {
       return {
         success: false,
         message: error instanceof Error ? error.message : 'Failed to submit onboarding data',
+      };
+    }
+  }
+
+  async fetchOnboardings(): Promise<{ success: boolean; data?: any; message?: string }> {
+    try {
+
+      const response = await axios.post(`${PROXY_API_URL}/proxy.php`, {
+        service: 'get_onboardings',
+        payload: {},
+      });
+
+      if (!response.data || response.status !== 200) {
+        throw new Error('Failed to fetch onboardings');
+      }
+
+      const result = response.data;
+      return {
+        success: true,
+        data: result,
+      };
+
+    } catch (error) {
+      console.error('Error fetching onboardings:', error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to fetch onboardings',
       };
     }
   }

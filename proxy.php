@@ -1,7 +1,7 @@
 <?php
 
 // Database configuration
-define('DB_HOST', '66.94.124.95');
+define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', 'N5TMs5iR}>45');
 define('DB_NAME', 'lysticle_leads');
@@ -44,6 +44,56 @@ $service = $requestData['service'];
 $payload = $requestData['payload'];
 
 switch ($service) {
+        case 'get_onboardings':
+        try {
+            $conn = connectDB();
+
+            // Get pagination parameters from payload, with defaults
+            $page = isset($payload['page']) ? max(1, intval($payload['page'])) : 1;
+            $limit = isset($payload['limit']) ? max(1, intval($payload['limit'])) : 10;
+            $offset = ($page - 1) * $limit;
+
+            // Get total count
+            $countResult = $conn->query("SELECT COUNT(*) as total FROM onboardings");
+            $total = $countResult ? intval($countResult->fetch_assoc()['total']) : 0;
+
+            // Fetch paginated results
+            $stmt = $conn->prepare("SELECT * FROM onboardings ORDER BY id DESC LIMIT ? OFFSET ?");
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            $stmt->bind_param('ii', $limit, $offset);
+            if (!$stmt->execute()) {
+                throw new Exception("Execute failed: " . $stmt->error);
+            }
+            $result = $stmt->get_result();
+            $onboardings = [];
+            while ($row = $result->fetch_assoc()) {
+                $onboardings[] = $row;
+            }
+
+            $response = [
+                'success' => true,
+                'data' => $onboardings,
+                'pagination' => [
+                    'page' => $page,
+                    'limit' => $limit,
+                    'total' => $total,
+                    'pages' => $limit > 0 ? ceil($total / $limit) : 0
+                ]
+            ];
+            echo json_encode($response);
+
+            $stmt->close();
+            $conn->close();
+            exit;
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+            exit;
+        }
+        break;
+
     case 'onboarding':
         try {
             $conn = connectDB();
