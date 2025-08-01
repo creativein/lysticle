@@ -33,7 +33,7 @@ const HeroSection = () => {
             
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
               <Button size="lg" onClick={() => navigate('/onboard')}>
-                Get Started Free
+                Get Started For Free
                 <ArrowRight size={20} className="ml-2" />
               </Button>
               
