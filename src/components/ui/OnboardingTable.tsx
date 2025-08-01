@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   createColumnHelper,
   flexRender,
@@ -21,6 +21,11 @@ interface Onboarding {
   job_title: string;
   domain: string;
   created_at?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
 }
 
 const columnHelper = createColumnHelper<Onboarding>();
@@ -54,12 +59,43 @@ const columns = [
     header: 'Domain',
     cell: info => info.getValue(),
   }),
+  columnHelper.accessor('utm_source', {
+    header: 'Source',
+    cell: info => info.getValue() || '-',
+  }),
+  columnHelper.accessor('utm_medium', {
+    header: 'Medium',
+    cell: info => info.getValue() || '-',
+  }),
+  columnHelper.accessor('utm_campaign', {
+    header: 'Campaign',
+    cell: info => info.getValue() || '-',
+  }),
+  columnHelper.accessor('utm_term', {
+    header: 'Search Term',
+    cell: info => info.getValue() || '-',
+  }),
+  columnHelper.accessor('utm_content', {
+    header: 'Content',
+    cell: info => info.getValue() || '-',
+  }),
 ];
+
+interface FilterState {
+  utm_source: string;
+  utm_medium: string;
+  utm_campaign: string;
+}
 
 export function OnboardingTable() {
   const [data, setData] = useState<Onboarding[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState<FilterState>({
+    utm_source: '',
+    utm_medium: '',
+    utm_campaign: '',
+  });
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -67,11 +103,19 @@ export function OnboardingTable() {
     total: 0,
   });
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await onboardingService.fetchOnboardings();
+      const response = await onboardingService.fetchOnboardings({
+        page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+        filters: {
+          utm_source: filters.utm_source,
+          utm_medium: filters.utm_medium,
+          utm_campaign: filters.utm_campaign
+        }
+      });
       if (response.success && response.data) {
         setData(response.data.data || []);
         setPagination(prev => ({
@@ -82,16 +126,17 @@ export function OnboardingTable() {
       } else {
         setError(response.message || 'Failed to fetch data');
       }
-    } catch (err) {
+    } catch (error) {
       setError('An error occurred while fetching data');
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [pagination.pageIndex, pagination.pageSize, filters]);
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex]);
+  }, [pagination.pageIndex, filters.utm_source, filters.utm_medium, filters.utm_campaign, fetchData]);
 
   const table = useReactTable({
     data,
@@ -131,6 +176,49 @@ export function OnboardingTable() {
 
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="p-4 bg-gray-50 border-b border-gray-200">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label htmlFor="utm_source" className="block text-sm font-medium text-gray-700">
+              UTM Source
+            </label>
+            <input
+              type="text"
+              id="utm_source"
+              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
+              placeholder="Filter by source"
+              value={filters.utm_source}
+              onChange={(e) => setFilters(prev => ({ ...prev, utm_source: e.target.value }))}
+            />
+          </div>
+          <div>
+            <label htmlFor="utm_medium" className="block text-sm font-medium text-gray-700">
+              UTM Medium
+            </label>
+            <input
+              type="text"
+              id="utm_medium"
+              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
+              placeholder="Filter by medium"
+              value={filters.utm_medium}
+              onChange={(e) => setFilters(prev => ({ ...prev, utm_medium: e.target.value }))}
+            />
+          </div>
+          <div>
+            <label htmlFor="utm_campaign" className="block text-sm font-medium text-gray-700">
+              UTM Campaign
+            </label>
+            <input
+              type="text"
+              id="utm_campaign"
+              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
+              placeholder="Filter by campaign"
+              value={filters.utm_campaign}
+              onChange={(e) => setFilters(prev => ({ ...prev, utm_campaign: e.target.value }))}
+            />
+          </div>
+        </div>
+      </div>
       {isLoading ? (
         <div className="p-4 text-center">Loading...</div>
       ) : (

@@ -2,6 +2,7 @@ import { CompanyFormData } from '../features/onboarding/CompanyDetailsForm';
 import { ContactFormData } from '../features/onboarding/ContactDetailsForm';
 import { DomainFormData } from '../features/onboarding/DomainConfigForm';
 import axios from 'axios';
+import { utmService } from './utmService';
 
 const PROXY_API_URL = import.meta.env.VITE_PROXY_API_URL;
 export interface OnboardingSubmissionData {
@@ -21,6 +22,13 @@ export interface OnboardingSubmissionData {
   // Domain Configuration
   customDomain: string;
   isDNSVerified: boolean;
+
+  // UTM Parameters
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
 }
 
 class OnboardingService {
@@ -32,6 +40,7 @@ class OnboardingService {
     domainData: DomainFormData
   ): Promise<{ success: boolean; message: string }> {
     try {
+      const utmParams = utmService.getUTMParams();
       const formData: OnboardingSubmissionData = {
         // Company Details
         companyName: companyData.companyName,
@@ -49,6 +58,9 @@ class OnboardingService {
         // Domain Configuration
         customDomain: domainData.customDomain,
         isDNSVerified: domainData.isDNSVerified || false,
+
+        // UTM Parameters
+        ...(utmParams || {}),
       };
 
       const response = await fetch(`${this.API_URL}/proxy.php`, {
@@ -63,7 +75,7 @@ class OnboardingService {
         throw new Error('Failed to submit onboarding data');
       }
 
-      const result = await response.json();
+      await response.json();
       return {
         success: true,
         message: 'Onboarding data submitted successfully',
@@ -78,12 +90,23 @@ class OnboardingService {
     }
   }
 
-  async fetchOnboardings(): Promise<{ success: boolean; data?: any; message?: string }> {
+  async fetchOnboardings(params?: {
+    page?: number;
+    limit?: number;
+    filters?: {
+      utm_source?: string;
+      utm_medium?: string;
+      utm_campaign?: string;
+    };
+  }): Promise<{ success: boolean; data?: any; message?: string }> {
     try {
-
       const response = await axios.post(`${PROXY_API_URL}/proxy.php`, {
         service: 'get_onboardings',
-        payload: {},
+        payload: {
+          page: params?.page || 1,
+          limit: params?.limit || 10,
+          filters: params?.filters || {},
+        },
       });
 
       if (!response.data || response.status !== 200) {

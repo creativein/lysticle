@@ -57,12 +57,48 @@ switch ($service) {
             $countResult = $conn->query("SELECT COUNT(*) as total FROM onboardings");
             $total = $countResult ? intval($countResult->fetch_assoc()['total']) : 0;
 
-            // Fetch paginated results
-            $stmt = $conn->prepare("SELECT * FROM onboardings ORDER BY id DESC LIMIT ? OFFSET ?");
+            // Build the WHERE clause for UTM filters
+            $whereClause = "";
+            $filterParams = [];
+            $filterTypes = "";
+            
+            if (!empty($payload['filters'])) {
+                $conditions = [];
+                if (!empty($payload['filters']['utm_source'])) {
+                    $conditions[] = "utm_source LIKE ?";
+                    $filterParams[] = "%" . $payload['filters']['utm_source'] . "%";
+                    $filterTypes .= "s";
+                }
+                if (!empty($payload['filters']['utm_medium'])) {
+                    $conditions[] = "utm_medium LIKE ?";
+                    $filterParams[] = "%" . $payload['filters']['utm_medium'] . "%";
+                    $filterTypes .= "s";
+                }
+                if (!empty($payload['filters']['utm_campaign'])) {
+                    $conditions[] = "utm_campaign LIKE ?";
+                    $filterParams[] = "%" . $payload['filters']['utm_campaign'] . "%";
+                    $filterTypes .= "s";
+                }
+                
+                if (!empty($conditions)) {
+                    $whereClause = " WHERE " . implode(" AND ", $conditions);
+                }
+            }
+            
+            // Fetch paginated results with filters
+            $query = "SELECT * FROM onboardings" . $whereClause . " ORDER BY id DESC LIMIT ? OFFSET ?";
+            $stmt = $conn->prepare($query);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);
             }
-            $stmt->bind_param('ii', $limit, $offset);
+            
+            // Bind all parameters
+            if (!empty($filterParams)) {
+                $allParams = array_merge($filterParams, [$limit, $offset]);
+                $stmt->bind_param($filterTypes . "ii", ...$allParams);
+            } else {
+                $stmt->bind_param("ii", $limit, $offset);
+            }
             if (!$stmt->execute()) {
                 throw new Exception("Execute failed: " . $stmt->error);
             }
@@ -102,28 +138,52 @@ switch ($service) {
             $sql = "INSERT INTO onboardings (
                 company_name, industry, company_size, company_website,
                 first_name, last_name, email, phone, job_title,
-                domain
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                domain, utm_source, utm_medium, utm_campaign, utm_term, utm_content
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);
             }
             
+            // Extract and prepare all parameters
+            $companyName = $payload['companyName'];
+            $industry = $payload['industry'];
+            $companySize = $payload['companySize'];
+            $companyWebsite = $payload['companyWebsite'];
+            $firstName = $payload['firstName'];
+            $lastName = $payload['lastName'];
+            $email = $payload['email'];
+            $phoneNumber = $payload['phoneNumber'];
+            $jobTitle = $payload['jobTitle'];
+            $customDomain = $payload['customDomain'];
+            
+            // UTM parameters with default empty string if not set
+            $utmSource = isset($payload['utm_source']) ? $payload['utm_source'] : '';
+            $utmMedium = isset($payload['utm_medium']) ? $payload['utm_medium'] : '';
+            $utmCampaign = isset($payload['utm_campaign']) ? $payload['utm_campaign'] : '';
+            $utmTerm = isset($payload['utm_term']) ? $payload['utm_term'] : '';
+            $utmContent = isset($payload['utm_content']) ? $payload['utm_content'] : '';
+
             // Bind parameters
-            // 'ssssssssss' represents the types of the 10 parameters (all strings)
+            // 'sssssssssssssss' represents the types of the 15 parameters (all strings)
             $stmt->bind_param(
-                'ssssssssss',
-                $payload['companyName'],
-                $payload['industry'],
-                $payload['companySize'],
-                $payload['companyWebsite'],
-                $payload['firstName'],
-                $payload['lastName'],
-                $payload['email'],
-                $payload['phoneNumber'],
-                $payload['jobTitle'],
-                $payload['customDomain']
+                'sssssssssssssss',
+                $companyName,
+                $industry,
+                $companySize,
+                $companyWebsite,
+                $firstName,
+                $lastName,
+                $email,
+                $phoneNumber,
+                $jobTitle,
+                $customDomain,
+                $utmSource,
+                $utmMedium,
+                $utmCampaign,
+                $utmTerm,
+                $utmContent
             );
             
             // Execute the statement
