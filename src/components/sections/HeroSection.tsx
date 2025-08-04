@@ -37,9 +37,9 @@ const HeroSection = () => {
                 <ArrowRight size={20} className="ml-2" />
               </Button>
               
-              <Button variant="outline" size="lg">
+              {/* <Button variant="outline" size="lg">
                 Watch Demo
-              </Button>
+              </Button> */}
             </div>
             
             <p className="mt-6 text-gray-500 text-sm">
