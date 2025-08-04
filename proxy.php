@@ -228,6 +228,95 @@ switch ($service) {
         $payload = http_build_query($payload);
         break;
     
+    case 'get_contacts':
+        try {
+            $conn = connectDB();
+
+            // Get pagination parameters from payload, with defaults
+            $page = isset($payload['page']) ? max(1, intval($payload['page'])) : 1;
+            $limit = isset($payload['limit']) ? max(1, intval($payload['limit'])) : 10;
+            $offset = ($page - 1) * $limit;
+
+            // Get total count
+            $countResult = $conn->query("SELECT COUNT(*) as total FROM contact_forms");
+            $total = $countResult ? intval($countResult->fetch_assoc()['total']) : 0;
+
+            // Build the WHERE clause for UTM filters
+            $whereClause = "";
+            $filterParams = [];
+            $filterTypes = "";
+            
+            if (!empty($payload['filters'])) {
+                $conditions = [];
+                if (!empty($payload['filters']['utm_source'])) {
+                    $conditions[] = "utm_source LIKE ?";
+                    $filterParams[] = "%" . $payload['filters']['utm_source'] . "%";
+                    $filterTypes .= "s";
+                }
+                if (!empty($payload['filters']['utm_medium'])) {
+                    $conditions[] = "utm_medium LIKE ?";
+                    $filterParams[] = "%" . $payload['filters']['utm_medium'] . "%";
+                    $filterTypes .= "s";
+                }
+                if (!empty($payload['filters']['utm_campaign'])) {
+                    $conditions[] = "utm_campaign LIKE ?";
+                    $filterParams[] = "%" . $payload['filters']['utm_campaign'] . "%";
+                    $filterTypes .= "s";
+                }
+                
+                if (!empty($conditions)) {
+                    $whereClause = " WHERE " . implode(" AND ", $conditions);
+                }
+            }
+            
+            // Fetch paginated results with filters
+            $query = "SELECT * FROM contact_forms" . $whereClause . " ORDER BY submitted_at DESC LIMIT ? OFFSET ?";
+            $stmt = $conn->prepare($query);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            
+            // Bind all parameters
+            if (!empty($filterParams)) {
+                $allParams = array_merge($filterParams, [$limit, $offset]);
+                $stmt->bind_param($filterTypes . "ii", ...$allParams);
+            } else {
+                $stmt->bind_param("ii", $limit, $offset);
+            }
+
+            if (!$stmt->execute()) {
+                throw new Exception("Execute failed: " . $stmt->error);
+            }
+            
+            $result = $stmt->get_result();
+            $contacts = [];
+            while ($row = $result->fetch_assoc()) {
+                $contacts[] = $row;
+            }
+
+            $response = [
+                'success' => true,
+                'data' => $contacts,
+                'pagination' => [
+                    'page' => $page,
+                    'limit' => $limit,
+                    'total' => $total,
+                    'pages' => $limit > 0 ? ceil($total / $limit) : 0
+                ]
+            ];
+            
+            echo json_encode($response);
+            $stmt->close();
+            $conn->close();
+            exit;
+
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+            exit;
+        }
+        break;
+
     case 'contact':
         try {
             $conn = connectDB();
