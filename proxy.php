@@ -255,7 +255,8 @@ switch ($service) {
             $utmTerm = $payload['utm_term'] ?? '';
             $utmContent = $payload['utm_content'] ?? '';
             $source = $payload['source'] ?? '';
-            $submittedAt = $payload['submitted_at'];
+            // add date here 
+            $submittedAt = date('Y-m-d H:i:s');
             
             // Bind parameters
             $stmt->bind_param(

@@ -66,10 +66,9 @@ class ContactService {
       const nameValidation = this.validateName(formData.name);
       const emailValidation = this.validateEmail(formData.email);
       const phoneValidation = this.validatePhone(formData.phone);
-      const messageValidation = this.validateMessage(formData.message);
 
       if (!nameValidation.isValid || !emailValidation.isValid || 
-          !phoneValidation.isValid || !messageValidation.isValid) {
+          !phoneValidation.isValid) {
         return {
           success: false,
           message: 'Please fix validation errors before submitting'
@@ -86,7 +85,6 @@ class ContactService {
           payload: {
             ...formData,
             // Add metadata
-            submitted_at: new Date().toISOString(),
             source: window.location.href,
             // Get UTM parameters from URL if present
             utm_source: new URLSearchParams(window.location.search).get('utm_source') || '',
