@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, Clock, Users, AlertCircle, CheckCircle } from 'lucide-react';
 import InputMask from 'react-input-mask';
 import Button from '../ui/Button';
+import { contactService } from '../../services/contactService';
 
 declare global {
   interface Window {
@@ -215,13 +216,38 @@ const CTASection = () => {
     return !Object.values(errors).some(error => error !== '');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (validateForm()) {
-      console.log('Form submitted:', formData);
-      // Handle form submission here
-      alert('Thank you! We will contact you soon.');
+      setIsSubmitting(true);
+      setSubmitMessage(null);
+      
+      try {
+        const result = await contactService.submitContactForm(formData);
+        if (result.success) {
+          setSubmitMessage({ type: 'success', text: result.message });
+          // Reset form
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            message: ''
+          });
+        } else {
+          setSubmitMessage({ type: 'error', text: result.message });
+        }
+      } catch (error) {
+        setSubmitMessage({ 
+          type: 'error', 
+          text: 'An error occurred while submitting the form. Please try again.' 
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -398,14 +424,26 @@ const CTASection = () => {
                   variant="primary" 
                   fullWidth 
                   className="bg-white !text-violet-600 border-white hover:bg-violet-50 hover:!text-white"
-                  disabled={validationStatus.email.isChecking || validationStatus.phone.isChecking}
+                  disabled={validationStatus.email.isChecking || validationStatus.phone.isChecking || isSubmitting}
                 >
-                  {(validationStatus.email.isChecking || validationStatus.phone.isChecking) 
-                    ? 'Validating...' 
-                    : 'Get My Free Strategy Session'
+                  {isSubmitting 
+                    ? 'Sending...' 
+                    : (validationStatus.email.isChecking || validationStatus.phone.isChecking)
+                      ? 'Validating...'
+                      : 'Get My Free Strategy Session'
                   }
                 </Button>
               </form>
+              
+              {submitMessage && (
+                <div className={`mt-4 p-3 rounded-lg text-sm ${
+                  submitMessage.type === 'success' 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {submitMessage.text}
+                </div>
+              )}
               
               <p className="mt-4 text-xs text-center text-violet-200">
                 By scheduling a consultation, you agree to our Terms of Service and Privacy Policy.

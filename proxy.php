@@ -228,6 +228,75 @@ switch ($service) {
         $payload = http_build_query($payload);
         break;
     
+    case 'contact':
+        try {
+            $conn = connectDB();
+            
+            // Prepare the SQL statement for contact form submissions
+            $sql = "INSERT INTO contact_forms (
+                name, email, phone, message,
+                utm_source, utm_medium, utm_campaign, utm_term, utm_content,
+                source, submitted_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            
+            // Extract data from payload
+            $name = $payload['name'];
+            $email = $payload['email'];
+            $phone = $payload['phone'];
+            $message = $payload['message'];
+            $utmSource = $payload['utm_source'] ?? '';
+            $utmMedium = $payload['utm_medium'] ?? '';
+            $utmCampaign = $payload['utm_campaign'] ?? '';
+            $utmTerm = $payload['utm_term'] ?? '';
+            $utmContent = $payload['utm_content'] ?? '';
+            $source = $payload['source'] ?? '';
+            $submittedAt = $payload['submitted_at'];
+            
+            // Bind parameters
+            $stmt->bind_param(
+                'sssssssssss',
+                $name,
+                $email,
+                $phone,
+                $message,
+                $utmSource,
+                $utmMedium,
+                $utmCampaign,
+                $utmTerm,
+                $utmContent,
+                $source,
+                $submittedAt
+            );
+            
+            // Execute the statement
+            if (!$stmt->execute()) {
+                throw new Exception("Execute failed: " . $stmt->error);
+            }
+            
+            $insertId = $stmt->insert_id;
+            $response = [
+                'success' => true,
+                'message' => 'Contact form submitted successfully',
+                'id' => $insertId
+            ];
+            
+            echo json_encode($response);
+            $stmt->close();
+            $conn->close();
+            exit;
+            
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+            exit;
+        }
+        break;
+
     case 'googledns':
         if (!isset($payload['name']) || !isset($payload['type'])) {
             http_response_code(400);
