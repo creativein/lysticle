@@ -114,6 +114,76 @@ class ContactService {
       };
     }
   }
+
+  async fetchContacts(params?: {
+    page?: number;
+    limit?: number;
+    filters?: {
+      utm_source?: string;
+      utm_medium?: string;
+      utm_campaign?: string;
+    };
+  }): Promise<{ 
+    success: boolean; 
+    data?: { 
+      data: Array<{
+        id: number;
+        name: string;
+        email: string;
+        phone: string;
+        message: string;
+        utm_source?: string;
+        utm_medium?: string;
+        utm_campaign?: string;
+        utm_term?: string;
+        utm_content?: string;
+        source?: string;
+        submitted_at: string;
+        created_at: string;
+      }>;
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        pages: number;
+      };
+    }; 
+    message?: string; 
+  }> {
+    try {
+      const response = await fetch(`${this.API_URL}/proxy.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service: 'get_contacts',
+          payload: {
+            page: params?.page || 1,
+            limit: params?.limit || 10,
+            filters: params?.filters || {},
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch contacts');
+      }
+
+      const data = await response.json();
+      return {
+        success: true,
+        data,
+      };
+
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to fetch contacts',
+      };
+    }
+  }
 }
 
 export const contactService = new ContactService();

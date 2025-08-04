@@ -2,8 +2,12 @@ import { ArrowLeft, ListChecks } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../components/ui/Button';
 import { OnboardingTable } from '../components/ui/OnboardingTable';
+import { ContactTable } from '../components/ui/ContactTable';
+import { TabButton } from '../components/ui/TabButton';
+import { useState } from 'react';
 
 const OnboardingsPage = () => {
+  const [activeTab, setActiveTab] = useState<'onboardings' | 'contacts'>('onboardings');
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-blue-50">
       <nav className="border-b bg-white/50 backdrop-blur-sm">
@@ -21,9 +25,30 @@ const OnboardingsPage = () => {
         </div>
       </nav>
       <main className="container mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold mb-6">Onboardings</h1>
+        <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
         <div className="mb-8">
-          <OnboardingTable />
+          <div className="border-b border-gray-200 mb-6">
+            <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+              <TabButton
+                isActive={activeTab === 'onboardings'}
+                onClick={() => setActiveTab('onboardings')}
+              >
+                Onboardings
+              </TabButton>
+              <TabButton
+                isActive={activeTab === 'contacts'}
+                onClick={() => setActiveTab('contacts')}
+              >
+                Contact Forms
+              </TabButton>
+            </nav>
+          </div>
+          
+          {activeTab === 'onboardings' ? (
+            <OnboardingTable />
+          ) : (
+            <ContactTable />
+          )}
         </div>
       </main>
     </div>

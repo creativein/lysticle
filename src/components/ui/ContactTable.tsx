@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import {
   createColumnHelper,
   flexRender,
@@ -6,60 +6,49 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { onboardingService } from '../../services/onboardingService';
+import { contactService } from '../../services/contactService';
 import Button from './Button';
 
-interface Onboarding {
+interface Contact {
   id: number;
-  company_name: string;
-  industry: string;
-  company_size: string;
-  first_name: string;
-  last_name: string;
+  name: string;
   email: string;
   phone: string;
-  job_title: string;
-  domain: string;
-  created_at?: string;
+  message: string;
   utm_source?: string;
   utm_medium?: string;
   utm_campaign?: string;
   utm_term?: string;
   utm_content?: string;
+  source?: string;
+  submitted_at: string;
+  created_at: string;
 }
 
-const columnHelper = createColumnHelper<Onboarding>();
+const columnHelper = createColumnHelper<Contact>();
 
 const columns = [
-  columnHelper.accessor('company_name', {
-    header: 'Company Name',
-    cell: info => info.getValue(),
-  }),
-  columnHelper.accessor('industry', {
-    header: 'Industry',
-    cell: info => info.getValue(),
-  }),
-  columnHelper.accessor('company_size', {
-    header: 'Company Size',
-    cell: info => info.getValue(),
-  }),
-  columnHelper.accessor('first_name', {
-    header: 'First Name',
-    cell: info => info.getValue(),
-  }),
-  columnHelper.accessor('last_name', {
-    header: 'Last Name',
+  columnHelper.accessor('name', {
+    header: 'Name',
     cell: info => info.getValue(),
   }),
   columnHelper.accessor('email', {
     header: 'Email',
     cell: info => info.getValue(),
   }),
-  columnHelper.accessor('domain', {
-    header: 'Domain',
+  columnHelper.accessor('phone', {
+    header: 'Phone',
     cell: info => info.getValue(),
   }),
-  columnHelper.accessor('utm_source', {
+  columnHelper.accessor('message', {
+    header: 'Message',
+    cell: info => (
+      <div className="max-w-xs truncate" title={info.getValue()}>
+        {info.getValue()}
+      </div>
+    ),
+  }),
+  columnHelper.accessor('source', {
     header: 'Source',
     cell: info => info.getValue() || '-',
   }),
@@ -71,35 +60,16 @@ const columns = [
     header: 'Campaign',
     cell: info => info.getValue() || '-',
   }),
-  columnHelper.accessor('utm_term', {
-    header: 'Search Term',
-    cell: info => info.getValue() || '-',
-  }),
-  columnHelper.accessor('utm_content', {
-    header: 'Content',
-    cell: info => info.getValue() || '-',
-  }),
-  columnHelper.accessor('created_at', {
+  columnHelper.accessor('submitted_at', {
     header: 'Submitted',
-    cell: info => info.getValue() || new Date(info.getValue()).toLocaleString() || '-',
+    cell: info => new Date(info.getValue()).toLocaleString(),
   }),
 ];
 
-interface FilterState {
-  utm_source: string;
-  utm_medium: string;
-  utm_campaign: string;
-}
-
-export function OnboardingTable() {
-  const [data, setData] = useState<Onboarding[]>([]);
+export function ContactTable() {
+  const [data, setData] = useState<Contact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<FilterState>({
-    utm_source: '',
-    utm_medium: '',
-    utm_campaign: '',
-  });
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -107,18 +77,13 @@ export function OnboardingTable() {
     total: 0,
   });
 
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await onboardingService.fetchOnboardings({
+      const response = await contactService.fetchContacts({
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        filters: {
-          utm_source: filters.utm_source,
-          utm_medium: filters.utm_medium,
-          utm_campaign: filters.utm_campaign
-        }
       });
       if (response.success && response.data) {
         setData(response.data.data || []);
@@ -136,11 +101,11 @@ export function OnboardingTable() {
     } finally {
       setIsLoading(false);
     }
-  }, [pagination.pageIndex, pagination.pageSize, filters]);
+  };
 
   useEffect(() => {
     fetchData();
-  }, [pagination.pageIndex, filters.utm_source, filters.utm_medium, filters.utm_campaign, fetchData]);
+  }, [pagination.pageIndex]);
 
   const table = useReactTable({
     data,
@@ -180,49 +145,6 @@ export function OnboardingTable() {
 
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="p-4 bg-gray-50 border-b border-gray-200">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label htmlFor="utm_source" className="block text-sm font-medium text-gray-700">
-              UTM Source
-            </label>
-            <input
-              type="text"
-              id="utm_source"
-              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-              placeholder="Filter by source"
-              value={filters.utm_source}
-              onChange={(e) => setFilters(prev => ({ ...prev, utm_source: e.target.value }))}
-            />
-          </div>
-          <div>
-            <label htmlFor="utm_medium" className="block text-sm font-medium text-gray-700">
-              UTM Medium
-            </label>
-            <input
-              type="text"
-              id="utm_medium"
-              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-              placeholder="Filter by medium"
-              value={filters.utm_medium}
-              onChange={(e) => setFilters(prev => ({ ...prev, utm_medium: e.target.value }))}
-            />
-          </div>
-          <div>
-            <label htmlFor="utm_campaign" className="block text-sm font-medium text-gray-700">
-              UTM Campaign
-            </label>
-            <input
-              type="text"
-              id="utm_campaign"
-              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-              placeholder="Filter by campaign"
-              value={filters.utm_campaign}
-              onChange={(e) => setFilters(prev => ({ ...prev, utm_campaign: e.target.value }))}
-            />
-          </div>
-        </div>
-      </div>
       {isLoading ? (
         <div className="p-4 text-center">Loading...</div>
       ) : (
