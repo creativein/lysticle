@@ -9,6 +9,7 @@ import FAQSection from '../components/sections/FAQSection';
 import CTASection from '../components/sections/CTASection';
 import Footer from '../components/Footer';
 import BackgroundAnimation from '../components/animations/BackgroundAnimation';
+import PodcastSection from '../components/sections/PodcastSection';
 
 const LandingPage = () => {
   // Initialize UTM tracking
@@ -21,6 +22,7 @@ const LandingPage = () => {
       <main>
         <HeroSection />
         <FeaturesSection />
+        <PodcastSection />
         <TestimonialSection />
         <PricingSection />
         <FAQSection />

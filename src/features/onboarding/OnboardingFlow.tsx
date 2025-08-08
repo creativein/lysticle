@@ -183,6 +183,7 @@ const OnboardingFlow: React.FC = () => {
               validationStatus={validationStatus}
               validateEmail={validateEmail}
               validatePhone={validatePhone}
+              companyData={companyData}
             />
           </OnboardingLayout>
         );

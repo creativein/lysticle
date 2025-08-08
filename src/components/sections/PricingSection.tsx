@@ -172,7 +172,7 @@ const PricingSection = () => {
           viewport={{ once: true }}
         >
           <p className="text-gray-600">
-            Need a custom plan? <a href="#" className="text-violet-600 font-medium">Contact us</a> for enterprise pricing.
+            Need a custom plan? <a href="#cta" className="text-violet-600 font-medium">Contact us</a> for enterprise pricing.
           </p>
         </motion.div>
       </div>

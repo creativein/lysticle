@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import InputMask from 'react-input-mask';
 import { CheckCircle, AlertCircle } from 'lucide-react';
+import { onboardingService } from '../../services/onboardingService';
 
 type ValidationStatus = {
   email: { isValid: boolean | null; message: string; isChecking: boolean };
   phone: { isValid: boolean | null; message: string; isChecking: boolean };
 };
+
+import { CompanyFormData } from './CompanyDetailsForm';
 
 type ContactDetailsFormProps = {
   onNext: (data: ContactFormData) => void;
@@ -16,6 +18,7 @@ type ContactDetailsFormProps = {
   validationStatus: ValidationStatus;
   validateEmail: (email: string) => void;
   validatePhone: (phone: string) => void;
+  companyData?: CompanyFormData;
 };
 
 export type ContactFormData = {
@@ -39,6 +42,7 @@ const ContactDetailsForm: React.FC<ContactDetailsFormProps> = ({
   validationStatus,
   validateEmail,
   validatePhone,
+  companyData,
 }) => {
   const [formData, setFormData] = useState<ContactFormData>(initialData);
   const [errors, setErrors] = useState<Partial<ContactFormData>>({});
@@ -91,14 +95,43 @@ const ContactDetailsForm: React.FC<ContactDetailsFormProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
     setIsLoading(true);
-    setTimeout(() => {
+    
+    try {
+      // Save the contact form data with company data if available
+      const submissionResult = await onboardingService.submitOnboardingData(
+        companyData || {
+          companyName: '',
+          industry: '',
+          size: '',
+          website: ''
+        },
+        formData,
+        {
+          subdomain: '',
+          customDomain: '',
+          usesCustomDomain: false,
+          isDNSVerified: false,
+          email: formData.email
+        } // Empty domain data as it's not available yet
+      );
+
+      if (!submissionResult.success) {
+        throw new Error(submissionResult.message);
+      }
+
       setIsLoading(false);
       onNext(formData);
-    }, 800);
+    } catch (error) {
+      setIsLoading(false);
+      setErrors(prev => ({
+        ...prev,
+        email: 'Failed to save contact information. Please try again.'
+      }));
+    }
   };
 
   const getInputClassName = (field: 'email' | 'phone') => {
@@ -128,26 +161,46 @@ const ContactDetailsForm: React.FC<ContactDetailsFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input
-          id="firstName"
-          label="First Name"
-          placeholder="Enter your first name"
-          required
-          value={formData.firstName}
-          onChange={handleChange}
-          error={errors.firstName}
-          name="firstName"
-        />
-        <Input
-          id="lastName"
-          label="Last Name"
-          placeholder="Enter your last name"
-          required
-          value={formData.lastName}
-          onChange={handleChange}
-          error={errors.lastName}
-          name="lastName"
-        />
+        <div>
+          <label htmlFor="firstName" className="block text-sm font-medium mb-1">
+            First Name<span className="text-red-500 ml-1">*</span>
+          </label>
+          <input
+            id="firstName"
+            name="firstName"
+            type="text"
+            placeholder="Enter your first name"
+            required
+            value={formData.firstName}
+            onChange={handleChange}
+            className={`w-full px-4 py-2 rounded-lg bg-white/5 border focus:outline-none focus:ring-2 text-black placeholder-gray-400 ${
+              errors.firstName ? 'border-red-400 focus:ring-red-400/30' : 'border-gray-200 focus:ring-gray-200/30'
+            }`}
+          />
+          {errors.firstName && (
+            <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
+          )}
+        </div>
+        <div>
+          <label htmlFor="lastName" className="block text-sm font-medium mb-1">
+            Last Name<span className="text-red-500 ml-1">*</span>
+          </label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            placeholder="Enter your last name"
+            required
+            value={formData.lastName}
+            onChange={handleChange}
+            className={`w-full px-4 py-2 rounded-lg bg-white/5 border focus:outline-none focus:ring-2 text-black placeholder-gray-400 ${
+              errors.lastName ? 'border-red-400 focus:ring-red-400/30' : 'border-gray-200 focus:ring-gray-200/30'
+            }`}
+          />
+          {errors.lastName && (
+            <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
+          )}
+        </div>
       </div>
       <div>
         <label htmlFor="email" className="block text-sm font-medium mb-1">
@@ -209,14 +262,20 @@ const ContactDetailsForm: React.FC<ContactDetailsFormProps> = ({
         )}
         <p className="text-xs text-gray-400 mt-1">Optional</p>
       </div>
-      <Input
-        id="jobTitle"
-        label="Job Title"
-        placeholder="e.g., Marketing Manager"
-        value={formData.jobTitle}
-        onChange={handleChange}
-        name="jobTitle"
-      />
+      <div>
+        <label htmlFor="jobTitle" className="block text-sm font-medium mb-1">
+          Job Title
+        </label>
+        <input
+          id="jobTitle"
+          name="jobTitle"
+          type="text"
+          placeholder="e.g., Marketing Manager"
+          value={formData.jobTitle}
+          onChange={handleChange}
+          className="w-full px-4 py-2 rounded-lg bg-white/5 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200/30 text-black placeholder-gray-400"
+        />
+      </div>
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
         <Button 
           type="button" 
