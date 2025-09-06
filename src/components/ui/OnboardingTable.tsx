@@ -55,6 +55,10 @@ const columns = [
     header: 'Email',
     cell: info => info.getValue(),
   }),
+  columnHelper.accessor('phone', {
+    header: 'Phone',
+    cell: info => info.getValue(),
+  }),
   columnHelper.accessor('domain', {
     header: 'Domain',
     cell: info => info.getValue(),
