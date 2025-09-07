@@ -12,17 +12,17 @@ interface PricingTierProps {
   delay: number;
 }
 
-const PricingTier = ({ 
-  name, 
-  price, 
-  description, 
-  features, 
+const PricingTier = ({
+  name,
+  price,
+  description,
+  features,
   excluded = [],
   isPopular = false,
-  delay 
+  delay
 }: PricingTierProps) => {
   return (
-    <motion.div 
+    <motion.div
       className={`bg-white rounded-xl overflow-hidden shadow-sm border ${isPopular ? 'border-violet-400 ring-4 ring-violet-100' : 'border-gray-200'}`}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -34,20 +34,20 @@ const PricingTier = ({
           Most Popular
         </div>
       )}
-      
+
       <div className="p-6">
         <h3 className="text-xl font-bold mb-2 text-gray-900">{name}</h3>
         <p className="text-gray-600 mb-4">{description}</p>
-        
+
         <div className="mb-6">
           <span className="text-4xl font-bold text-gray-900">${price}</span>
           <span className="text-gray-600">/month</span>
         </div>
-        
+
         <Button variant={isPopular ? 'primary' : 'outline'} fullWidth>
           Get Started
         </Button>
-        
+
         <div className="mt-8 space-y-4">
           {features.map((feature, index) => (
             <div key={index} className="flex items-start">
@@ -55,7 +55,7 @@ const PricingTier = ({
               <span className="text-gray-700">{feature}</span>
             </div>
           ))}
-          
+
           {excluded.map((feature, index) => (
             <div key={index} className="flex items-start opacity-50">
               <X size={20} className="text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
@@ -75,18 +75,29 @@ const PricingSection = () => {
       price: "29",
       description: "Perfect for bloggers and content creators",
       features: [
-        "5 listicle sites",
-        "10+ viral templates",
+        "Unlimited Traffic",
+        "10 Advertisers",
+        "3 Categories",
         "Basic SEO optimization",
         "Social sharing tools",
         "Basic analytics dashboard",
-        "Email support"
+        "Email support",
+        "2 Viral Templates",
+        "Lystical Branding",
+        "Click Tracking (Coming Soon)",
+        "Views Analytics (Coming Soon)"
       ],
       excluded: [
         "Advanced affiliate integration",
         "Custom domain",
         "Advanced SEO tools",
-        "Priority support"
+        "Priority support",
+        "White-label solution",
+        "API access",
+        "Team collaboration tools",
+        "Social media automation",
+        "A/B testing",
+        "No Lystical Branding"
       ],
       isPopular: false
     },
@@ -95,18 +106,21 @@ const PricingSection = () => {
       price: "79",
       description: "Ideal for affiliate marketers and growing brands",
       features: [
-        "25 listicle sites",
-        "50+ conversion templates",
+        "Unlimited Traffic",
+        "30 Advertisers",
+        "10 Categories",
+        "Priority Support",
         "Advanced SEO & schema markup",
-        "Full affiliate network integration",
-        "Custom domain support",
-        "Advanced analytics & A/B testing",
-        "Priority support",
-        "Social media automation"
+        "Advanced analytics",
+        "Social media automation (Coming Soon)",
+        "No Lystical Branding",
+        "Click Tracking (Coming Soon)",
+        "Views Analytics (Coming Soon)"
       ],
       excluded: [
         "White-label solution",
-        "API access"
+        "API access",
+        "Team collaboration tools"
       ],
       isPopular: true
     },
@@ -125,7 +139,9 @@ const PricingSection = () => {
         "Social media automation",
         "White-label solution",
         "API access",
-        "Team collaboration tools"
+        "Team collaboration tools",
+        "Click Tracking (Coming Soon)",
+        "Views Analytics (Coming Soon)"
       ],
       isPopular: false
     }
@@ -134,7 +150,7 @@ const PricingSection = () => {
   return (
     <section id="pricing" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
-        <motion.div 
+        <motion.div
           className="text-center max-w-3xl mx-auto mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -148,10 +164,10 @@ const PricingSection = () => {
             Start driving traffic, engagement, and sales with proven listicle templates. All plans include everything you need to create viral content.
           </p>
         </motion.div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {tiers.map((tier, index) => (
-            <PricingTier 
+            <PricingTier
               key={index}
               name={tier.name}
               price={tier.price}
@@ -163,8 +179,8 @@ const PricingSection = () => {
             />
           ))}
         </div>
-        
-        <motion.div 
+
+        <motion.div
           className="mt-12 text-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
