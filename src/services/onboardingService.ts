@@ -1,3 +1,4 @@
+
 import { CompanyFormData } from '../features/onboarding/CompanyDetailsForm';
 import { ContactFormData } from '../features/onboarding/ContactDetailsForm';
 import { DomainFormData } from '../features/onboarding/DomainConfigForm';
@@ -125,6 +126,26 @@ class OnboardingService {
         success: false,
         message: error instanceof Error ? error.message : 'Failed to fetch onboardings',
       };
+    }
+  }
+
+  async deleteOnboarding(id: number): Promise<{ success: boolean; data?: any; message?: string }> {
+    try {
+      const response = await fetch('/proxy.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service: 'delete_onboarding',
+          payload: { id }
+        }),
+      });
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting onboarding:', error);
+      return { success: false, message: 'Failed to delete record' };
     }
   }
 }

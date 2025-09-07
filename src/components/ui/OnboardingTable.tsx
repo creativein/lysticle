@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-table';
 import { onboardingService } from '../../services/onboardingService';
 import Button from './Button';
+import Dialog from '../../components/Dialog';
 
 interface Onboarding {
   id: number;
@@ -31,18 +32,6 @@ interface Onboarding {
 const columnHelper = createColumnHelper<Onboarding>();
 
 const columns = [
-  columnHelper.accessor('company_name', {
-    header: 'Company Name',
-    cell: info => info.getValue(),
-  }),
-  columnHelper.accessor('industry', {
-    header: 'Industry',
-    cell: info => info.getValue(),
-  }),
-  columnHelper.accessor('company_size', {
-    header: 'Company Size',
-    cell: info => info.getValue(),
-  }),
   columnHelper.accessor('first_name', {
     header: 'First Name',
     cell: info => info.getValue(),
@@ -61,6 +50,18 @@ const columns = [
   }),
   columnHelper.accessor('domain', {
     header: 'Domain',
+    cell: info => info.getValue(),
+  }),
+    columnHelper.accessor('company_name', {
+    header: 'Company Name',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor('industry', {
+    header: 'Industry',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor('company_size', {
+    header: 'Company Size',
     cell: info => info.getValue(),
   }),
   columnHelper.accessor('utm_source', {
@@ -95,6 +96,11 @@ interface FilterState {
   utm_campaign: string;
 }
 
+interface DialogState {
+  isOpen: boolean;
+  onboardingId: number | null;
+}
+
 export function OnboardingTable() {
   const [data, setData] = useState<Onboarding[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -110,6 +116,50 @@ export function OnboardingTable() {
     pageCount: 0,
     total: 0,
   });
+  const [deleteDialog, setDeleteDialog] = useState<DialogState>({
+    isOpen: false,
+    onboardingId: null,
+  });
+
+  // Add delete handling functions
+  const handleDeleteClick = (id: number) => {
+    setDeleteDialog({
+      isOpen: true,
+      onboardingId: id,
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteDialog.onboardingId) {
+      setIsLoading(true);
+      try {
+        const response = await onboardingService.deleteOnboarding(deleteDialog.onboardingId);
+        if (response.success) {
+          // Refresh data after successful deletion
+          fetchData();
+        } else {
+          setError(response.message || 'Failed to delete record');
+        }
+      } catch (error) {
+        setError('An error occurred while deleting the record');
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+        // Close the dialog
+        setDeleteDialog({
+          isOpen: false,
+          onboardingId: null,
+        });
+      }
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteDialog({
+      isOpen: false,
+      onboardingId: null,
+    });
+  };
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -146,9 +196,25 @@ export function OnboardingTable() {
     fetchData();
   }, [pagination.pageIndex, filters.utm_source, filters.utm_medium, filters.utm_campaign, fetchData]);
 
+  const columnsWithActions = [
+    ...columns,
+    columnHelper.display({
+      id: 'actions',
+      header: 'Actions',
+      cell: (info) => (
+        <button
+          onClick={() => handleDeleteClick(info.row.original.id)}
+          className="text-red-600 hover:text-red-800"
+        >
+          Delete
+        </button>
+      ),
+    }),
+  ];
+
   const table = useReactTable({
     data,
-    columns,
+    columns: columnsWithActions,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
@@ -296,6 +362,24 @@ export function OnboardingTable() {
             </div>
           </div>
         </>
+      )}
+      {/* Add confirmation dialog */}
+      {deleteDialog.isOpen && (
+        <Dialog
+          title="Confirm Deletion"
+          isOpen={deleteDialog.isOpen}
+          onClose={handleCancelDelete}
+        >
+          <p>Are you sure you want to delete this record? This action cannot be undone.</p>
+          <div className="mt-4 flex justify-end space-x-3">
+            <Button variant="outline" onClick={handleCancelDelete}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleConfirmDelete}>
+              Delete
+            </Button>
+          </div>
+        </Dialog>
       )}
     </div>
   );

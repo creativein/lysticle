@@ -24,8 +24,7 @@ const OnboardingsPage = () => {
           </Link>
         </div>
       </nav>
-      <main className="container mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <main className="container mx-auto px-4 py-4">
         <div className="mb-8">
           <div className="border-b border-gray-200 mb-6">
             <nav className="-mb-px flex space-x-8" aria-label="Tabs">

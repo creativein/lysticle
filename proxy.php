@@ -53,17 +53,13 @@ switch ($service) {
             $limit = isset($payload['limit']) ? max(1, intval($payload['limit'])) : 10;
             $offset = ($page - 1) * $limit;
 
-            // Get total count
-            $countResult = $conn->query("SELECT COUNT(*) as total FROM onboardings");
-            $total = $countResult ? intval($countResult->fetch_assoc()['total']) : 0;
-
-            // Build the WHERE clause for UTM filters
-            $whereClause = "";
+            // Build the WHERE clause for UTM filters and soft delete
+            $whereClause = " WHERE deleted_at IS NULL";
             $filterParams = [];
             $filterTypes = "";
-            
+            $conditions = [];
+
             if (!empty($payload['filters'])) {
-                $conditions = [];
                 if (!empty($payload['filters']['utm_source'])) {
                     $conditions[] = "utm_source LIKE ?";
                     $filterParams[] = "%" . $payload['filters']['utm_source'] . "%";
@@ -79,19 +75,31 @@ switch ($service) {
                     $filterParams[] = "%" . $payload['filters']['utm_campaign'] . "%";
                     $filterTypes .= "s";
                 }
-                
-                if (!empty($conditions)) {
-                    $whereClause = " WHERE " . implode(" AND ", $conditions);
-                }
             }
-            
-            // Fetch paginated results with filters
+            if (!empty($conditions)) {
+                $whereClause .= " AND " . implode(" AND ", $conditions);
+            }
+
+            // Get total count (soft delete aware)
+            $countQuery = "SELECT COUNT(*) as total FROM onboardings WHERE deleted_at IS NULL";
+            if (!empty($conditions)) {
+                $countQuery .= " AND " . implode(" AND ", $conditions);
+            }
+            $countStmt = $conn->prepare($countQuery);
+            if (!empty($filterParams)) {
+                $countStmt->bind_param($filterTypes, ...$filterParams);
+            }
+            $countStmt->execute();
+            $countResult = $countStmt->get_result();
+            $total = $countResult ? intval($countResult->fetch_assoc()['total']) : 0;
+            $countStmt->close();
+
+            // Fetch paginated results with filters and soft delete
             $query = "SELECT * FROM onboardings" . $whereClause . " ORDER BY id DESC LIMIT ? OFFSET ?";
             $stmt = $conn->prepare($query);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);
             }
-            
             // Bind all parameters
             if (!empty($filterParams)) {
                 $allParams = array_merge($filterParams, [$limit, $offset]);
@@ -398,7 +406,44 @@ switch ($service) {
         $headers = []; // No special headers required for Google DNS API
         $payload = null; // No POST payload required for Google DNS API
         break;
-
+    
+    case 'delete_onboarding':
+        try {
+            $conn = connectDB();
+            // Check if ID is provided
+            if (!isset($payload['id']) || empty($payload['id'])) {
+                throw new Exception("Onboarding ID is required");
+            }
+            $id = intval($payload['id']);
+            // Prepare the SQL statement for soft delete
+            $sql = "UPDATE onboardings SET deleted_at = ? WHERE id = ? AND deleted_at IS NULL";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            $deletedAt = date('Y-m-d H:i:s');
+            $stmt->bind_param('si', $deletedAt, $id);
+            if (!$stmt->execute()) {
+                throw new Exception("Execute failed: " . $stmt->error);
+            }
+            if ($stmt->affected_rows === 0) {
+                throw new Exception("No record found with ID: " . $id);
+            }
+            $response = [
+                'success' => true,
+                'message' => 'Record soft deleted successfully'
+            ];
+            echo json_encode($response);
+            $stmt->close();
+            $conn->close();
+            exit;
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+            exit;
+        }
+        break;
+    
     default:
         http_response_code(400);
         echo json_encode(['error' => 'Unknown service']);
