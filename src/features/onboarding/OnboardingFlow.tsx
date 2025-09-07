@@ -216,6 +216,7 @@ const OnboardingFlow: React.FC = () => {
                 domain: domainData.customDomain || `${domainData.subdomain}.example.com`,
                 isCustomDomain: !!domainData.customDomain,
               }}
+              email={contactData.email}
               onDashboardRedirect={handleDashboardRedirect}
             />
           </OnboardingLayout>

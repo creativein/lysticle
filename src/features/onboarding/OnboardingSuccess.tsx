@@ -54,14 +54,25 @@ const OnboardingSuccess: React.FC<OnboardingSuccessProps> = ({
         </a>
       </div>
 
-      {/* CMS Portal Login Details */}
-      <div className="bg-blue-50 rounded-lg p-4 max-w-md mx-auto border border-blue-100 text-left">
-        <p className="font-medium text-blue-800 mb-2">CMS Portal Login Details</p>
-        <div className="space-y-1 text-sm text-blue-700">
-          <p><span className="font-semibold">Login Via:</span> {email}</p>
-          <p><span className="font-semibold">Password:</span> <span className="font-mono">{import.meta.env.VITE_CMS_PASSWORD}</span></p>
+
+      {/* CMS Portal Login Details with Go to Dashboard button */}
+      <div className="bg-blue-50 rounded-lg p-4 max-w-md mx-auto border border-blue-100 text-left flex flex-col gap-3 items-stretch">
+        <div>
+          <p className="font-medium text-blue-800 mb-2">CMS Portal Login Details</p>
+          <div className="space-y-1 text-sm text-blue-700">
+            <p><span className="font-semibold">Login Via:</span> {email}</p>
+            <p><span className="font-semibold">Password:</span> <span className="font-mono">{import.meta.env.VITE_CMS_PASSWORD}</span></p>
+          </div>
+          <p className="text-xs text-blue-500 mt-2">You can change your password after logging in.</p>
         </div>
-        <p className="text-xs text-blue-500 mt-2">You can change your password after logging in.</p>
+        <Button
+          variant="primary"
+          size="lg"
+          className="mt-4 w-full"
+          onClick={handleGoToDashboard}
+        >
+          Go to Dashboard
+        </Button>
       </div>
 
       {domainInfo.isCustomDomain && (
@@ -75,15 +86,7 @@ const OnboardingSuccess: React.FC<OnboardingSuccessProps> = ({
         </div>
       )}
 
-      <div className="pt-4">
-        <Button
-          variant="primary"
-          size="lg"
-          onClick={handleGoToDashboard}
-        >
-          Go to Dashboard
-        </Button>
-      </div>
+      {/* Button moved to CMS Portal Login Details box above */}
     </div>
   );
 };
