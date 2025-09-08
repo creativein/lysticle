@@ -18,7 +18,7 @@ const OnboardingSuccess: React.FC<OnboardingSuccessProps> = ({
 }) => {
   const handleGoToDashboard = () => {
     // Open the user's domain in a new tab
-    const url = `https://${domainInfo.domain}`;
+    const url = `https://${domainInfo.domain}/admin`;
     window.open(url, '_blank', 'noopener,noreferrer');
 
     // Also call the original redirect handler for any additional logic
