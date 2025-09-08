@@ -39,13 +39,19 @@ const PricingTier = ({
         <h3 className="text-xl font-bold mb-2 text-gray-900">{name}</h3>
         <p className="text-gray-600 mb-4">{description}</p>
 
-        <div className="mb-6">
-          <span className="text-4xl font-bold text-gray-900">${price}</span>
-          <span className="text-gray-600">/month</span>
+        <div className="mb-6 flex flex-col items-center">
+          <div className="relative flex items-center justify-center">
+            <span className="text-4xl font-bold text-gray-900 mr-2">${price}</span>
+            <span className="absolute left-0 right-0 top-1/2 border-t-4 border-red-500 transform -translate-y-1/2"></span>
+            <span className="text-gray-600 ml-2">/month</span>
+          </div>
+          <span className="mt-2 px-3 py-1 rounded-full bg-gradient-to-r from-violet-500 to-pink-500 text-white font-semibold text-lg shadow-lg animate-pulse">
+            Free to use until Dec 2025!
+          </span>
         </div>
 
         <Button variant={isPopular ? 'primary' : 'outline'} fullWidth>
-          Get Started
+          Get Started For Free
         </Button>
 
         <div className="mt-8 space-y-4">
