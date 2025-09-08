@@ -443,6 +443,46 @@ switch ($service) {
             exit;
         }
         break;
+
+    case 'update_deployment_status':
+        try {
+            $conn = connectDB();
+
+            // Validate payload
+            if (!isset($payload['id']) || !isset($payload['deployment_status'])) {
+                throw new Exception("Missing required parameters: id and deployment_status");
+            }
+
+            $id = intval($payload['id']);
+            $deployment_status = $payload['deployment_status'];
+
+            // Prepare and execute update
+            $sql = "UPDATE onboardings SET deployment_status = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            $stmt->bind_param('si', $deployment_status, $id);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Execute failed: " . $stmt->error);
+            }
+
+            $response = [
+                'success' => true,
+                'message' => 'Deployment status updated successfully'
+            ];
+            echo json_encode($response);
+
+            $stmt->close();
+            $conn->close();
+            exit;
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+            exit;
+        }
+        break;
     
     default:
         http_response_code(400);
