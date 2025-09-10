@@ -16,6 +16,7 @@ type DomainConfigFormProps = {
   email: string;
   companyData?: CompanyFormData;
   contactData?: ContactFormData;
+  onDeploymentComplete?: () => void;
 };
 
 export type DomainFormData = {
@@ -40,7 +41,9 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
   },
   email,
   companyData,
-  contactData
+  contactData,
+  onDeploymentStart,
+  onDeploymentComplete
 }) => {
   const [formData, setFormData] = useState<DomainFormData>({
     ...initialData,
@@ -136,6 +139,7 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
     
     setIsLoading(true);
     setDeploymentStatus(null);
+    onDeploymentStart && onDeploymentStart();
     
     try {
       // First save the form data
@@ -196,7 +200,9 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
   };
 
   const handleDeploymentComplete = () => {
-    // Deployment completed successfully, proceed to next step
+    if (onDeploymentComplete) {
+      onDeploymentComplete();
+    }
     onNext(formData);
   };
 

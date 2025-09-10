@@ -4,10 +4,10 @@ import CompanyDetailsForm, { CompanyFormData } from './CompanyDetailsForm';
 import ContactDetailsForm, { ContactFormData } from './ContactDetailsForm';
 import DomainConfigForm, { DomainFormData } from './DomainConfigForm';
 import OnboardingSuccess from './OnboardingSuccess';
-import InputMask from 'react-input-mask'; // Add this import if not already present
 
 const OnboardingFlow: React.FC = () => {
   const [step, setStep] = useState(1);
+  const [isDeploying, setIsDeploying] = useState(false);
   const [companyData, setCompanyData] = useState<CompanyFormData>({
     companyName: '',
     industry: '',
@@ -45,6 +45,12 @@ const OnboardingFlow: React.FC = () => {
 
   const handleDomainSubmit = (data: DomainFormData) => {
     setDomainData(data);
+    setIsDeploying(true);
+    // Wait for deployment to complete before moving to step 4
+  };
+
+  const handleDeploymentComplete = () => {
+    setIsDeploying(false);
     setStep(4);
   };
 
@@ -193,14 +199,17 @@ const OnboardingFlow: React.FC = () => {
             title="Set Up Your Domain" 
             description="Choose how your users will access your application."
             step={3}
+            hideUI={isDeploying}
           >
             <DomainConfigForm 
               onNext={handleDomainSubmit} 
               onBack={() => setStep(2)} 
               initialData={domainData}
-              email={contactData.email} // <-- pass email from ContactDetailsForm
+              email={contactData.email}
               companyData={companyData}
               contactData={contactData}
+              onDeploymentStart={() => setIsDeploying(true)}
+              onDeploymentComplete={handleDeploymentComplete}
             />
           </OnboardingLayout>
         );
@@ -210,6 +219,7 @@ const OnboardingFlow: React.FC = () => {
             title="Onboarding Complete" 
             description="Your application is ready to use."
             step={4}
+            hideUI={true}
           >
             <OnboardingSuccess 
               domainInfo={{

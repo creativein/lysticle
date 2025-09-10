@@ -7,6 +7,7 @@ type OnboardingLayoutProps = {
   title: string;
   description: string;
   step: number;
+  hideUI?: boolean;
 };
 
 const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
@@ -14,39 +15,44 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
   title,
   description,
   step,
+  hideUI = false
 }) => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 flex flex-col">
       
       <main className="flex-1 max-w-3xl mx-auto w-full">
         <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-xl">{title}</CardTitle>
-            <CardDescription>{description}</CardDescription>
-          </CardHeader>
+          {!hideUI && (
+            <CardHeader>
+              <CardTitle className="text-xl">{title}</CardTitle>
+              <CardDescription>{description}</CardDescription>
+            </CardHeader>
+          )}
           <CardContent>
-            <div className="flex items-center mb-8 justify-between max-w-xs sm:max-w-md mx-auto">
-              <StepIcon 
-                Icon={Building2} 
-                active={step >= 1} 
-                complete={step > 1}
-                text="Company"
-              />
-              <StepConnector active={step > 1} />
-              <StepIcon 
-                Icon={CircleUser} 
-                active={step >= 2} 
-                complete={step > 2}
-                text="Contact"
-              />
-              <StepConnector active={step > 2} />
-              <StepIcon 
-                Icon={Globe} 
-                active={step >= 3} 
-                complete={step > 3}
-                text="Domain"
-              />
-            </div>
+            {!hideUI && (
+              <div className="flex items-center mb-8 justify-between max-w-xs sm:max-w-md mx-auto">
+                <StepIcon 
+                  Icon={Building2} 
+                  active={step >= 1} 
+                  complete={step > 1}
+                  text="Company"
+                />
+                <StepConnector active={step > 1} />
+                <StepIcon 
+                  Icon={CircleUser} 
+                  active={step >= 2} 
+                  complete={step > 2}
+                  text="Contact"
+                />
+                <StepConnector active={step > 2} />
+                <StepIcon 
+                  Icon={Globe} 
+                  active={step >= 3} 
+                  complete={step > 3}
+                  text="Domain"
+                />
+              </div>
+            )}
             {children}
           </CardContent>
         </Card>

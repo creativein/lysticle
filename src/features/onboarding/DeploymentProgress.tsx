@@ -122,7 +122,7 @@ const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4 mt-8">
       <div className="max-w-2xl w-full">
         {/* Header */}
         <div className="text-center mb-8">
@@ -135,28 +135,6 @@ const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
           <p className="text-gray-600">
             Setting up your infrastructure for <span className="font-semibold text-blue-600">{domain}</span>
           </p>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-gray-700">Overall Progress</span>
-            <span className="text-sm text-gray-500">
-              {Math.round(progress)}% Complete
-            </span>
-          </div>
-          
-          <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          <div className="flex justify-between text-sm text-gray-500">
-            <span>Time Elapsed: {formatTime(timeElapsed)}</span>
-            <span>Est. Remaining: {formatTime(estimatedTimeRemaining)}</span>
-          </div>
         </div>
 
         {/* Steps */}
@@ -228,6 +206,28 @@ const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
                 </div>
               );
             })}
+          </div>
+        </div>
+        
+        {/* Progress Bar */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 mt-6">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-sm font-medium text-gray-700">Overall Progress</span>
+            <span className="text-sm text-gray-500">
+              {Math.round(progress)}% Complete
+            </span>
+          </div>
+          
+          <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+            <div 
+              className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          <div className="flex justify-between text-sm text-gray-500">
+            <span>Time Elapsed: {formatTime(timeElapsed)}</span>
+            <span>Est. Remaining: {formatTime(estimatedTimeRemaining)}</span>
           </div>
         </div>
 
