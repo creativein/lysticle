@@ -16,6 +16,7 @@ type DomainConfigFormProps = {
   email: string;
   companyData?: CompanyFormData;
   contactData?: ContactFormData;
+  onDeploymentStart?: () => void;
   onDeploymentComplete?: () => void;
 };
 
@@ -139,8 +140,7 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
     
     setIsLoading(true);
     setDeploymentStatus(null);
-    onDeploymentStart && onDeploymentStart();
-    
+
     try {
       // First save the form data
       const submissionResult = await onboardingService.submitOnboardingData(
@@ -169,7 +169,7 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
         domain: formData.customDomain,
         email: formData.email || ''
       });
-      
+
       // Save deployment status
       setDeploymentStatus(deploymentResult);
       
@@ -185,6 +185,9 @@ const DomainConfigForm: React.FC<DomainConfigFormProps> = ({
       // Start the deployment progress screen
       setIsLoading(false);
       setIsDeploying(true);
+      if (onDeploymentStart) {
+        onDeploymentStart();
+      }
       
     } catch {
       setDeploymentStatus({
