@@ -122,7 +122,7 @@ const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4 mt-8">
+    <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4 mt-5">
       <div className="max-w-2xl w-full">
         {/* Header */}
         <div className="text-center mb-8">
@@ -210,7 +210,7 @@ const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
         </div>
         
         {/* Progress Bar */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mt-6">
+        {/* <div className="bg-white rounded-2xl shadow-lg p-8 mt-6">
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm font-medium text-gray-700">Overall Progress</span>
             <span className="text-sm text-gray-500">
@@ -229,7 +229,7 @@ const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
             <span>Time Elapsed: {formatTime(timeElapsed)}</span>
             <span>Est. Remaining: {formatTime(estimatedTimeRemaining)}</span>
           </div>
-        </div>
+        </div> */}
 
         {/* Footer Info */}
         <div className="mt-6 text-center">
