@@ -4,6 +4,7 @@ import { ArrowRight, Calendar, Clock, Users, AlertCircle, CheckCircle } from 'lu
 import InputMask from 'react-input-mask';
 import Button from '../ui/Button';
 import { contactService } from '../../services/contactService';
+import { useNavigate } from 'react-router-dom';
 
 declare global {
   interface Window {
@@ -13,6 +14,7 @@ declare global {
 }
 
 const CTASection = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -311,7 +313,7 @@ const CTASection = () => {
                   <span className="text-violet-100">No commitment required</span>
                 </div>
               </div>
-              <Button variant="outline" size="lg" className="bg-white text-violet-600 border-white hover:bg-violet-50">
+              <Button variant="outline" size="lg" className="bg-white text-violet-600 border-white hover:bg-violet-50" onClick={() => navigate('/onboard')}>
                 Start Creating Viral Content
                 <ArrowRight size={20} className="ml-2" />
               </Button>

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Check, X } from 'lucide-react';
 import Button from '../ui/Button';
+import { useNavigate } from 'react-router-dom';
 
 interface PricingTierProps {
   name: string;
@@ -21,6 +22,7 @@ const PricingTier = ({
   isPopular = false,
   delay
 }: PricingTierProps) => {
+  const navigate = useNavigate();
   return (
     <motion.div
       className={`bg-white rounded-xl overflow-hidden shadow-sm border ${isPopular ? 'border-violet-400 ring-4 ring-violet-100' : 'border-gray-200'}`}
@@ -80,7 +82,7 @@ const PricingTier = ({
           <span className="mt-3 text-sm text-gray-500">No credit card required</span>
         </div>
 
-        <Button variant={isPopular ? 'primary' : 'outline'} fullWidth>
+        <Button variant={isPopular ? 'primary' : 'outline'} fullWidth onClick={() => navigate('/onboard')}>
           Get Started For Free
         </Button>
 

@@ -1,12 +1,31 @@
 import { motion } from 'framer-motion';
 import { pageTransition } from '../utils/animations';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, ListChecks } from 'lucide-react';
+import Button from '../components/ui/Button';
 
 const PrivacyPolicy = () => {
   return (
     <motion.div
-      className="min-h-screen bg-gray-50 py-16 px-4 sm:px-6 lg:px-8"
+      className="min-h-screen bg-gray-50"
       {...pageTransition}
     >
+      <nav className="border-b bg-white/50 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center space-x-2 text-violet-700">
+            <ListChecks size={32} strokeWidth={2} />
+            <span className="text-2xl font-bold">lysticle</span>
+          </Link>
+          <Link to="/">
+            <Button variant="ghost" className="flex items-center">
+              <ArrowLeft size={20} className="mr-2" />
+              Back to Home
+            </Button>
+          </Link>
+        </div>
+      </nav>
+      <div className="py-16 px-4 sm:px-6 lg:px-8">
+
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-900 mb-8">Privacy Policy</h1>
         
@@ -85,6 +104,7 @@ const PrivacyPolicy = () => {
         <div className="mt-12 text-sm text-gray-500">
           Last updated: September 12, 2025
         </div>
+      </div>
       </div>
     </motion.div>
   );
