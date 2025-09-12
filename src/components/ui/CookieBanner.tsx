@@ -26,30 +26,34 @@ export const CookieBanner: React.FC<CookieBannerProps> = ({ onAccept, onReject }
       variants={fadeInUp}
       className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-lg z-50"
     >
-      <div className="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-sm text-gray-600">
-          We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.{' '}
-          <a href="/privacy-policy" className="text-blue-600 hover:underline">
-            Learn more
+      <div className="container mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4 px-4">
+        <div className="text-sm text-gray-700 leading-relaxed">
+          We value your privacy. We and our partners use cookies and similar technologies to provide you with a better browsing experience, analyze site traffic, and personalize content. You can manage your preferences by selecting "Cookie Settings" or accept our recommended settings.{' '}
+          <a href="/privacy-policy" className="text-blue-600 hover:underline font-medium">
+            Privacy Policy</a> · {' '}
+          <a href="/terms-of-use" className="text-blue-600 hover:underline font-medium">
+            Terms of Use
           </a>
         </div>
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <Button
             variant="secondary"
             onClick={() => {
               onReject();
               setIsVisible(false);
             }}
+            className="px-6 py-2 text-sm font-medium hover:bg-gray-100"
           >
-            Reject All
+            Decline Optional
           </Button>
           <Button
             onClick={() => {
               onAccept();
               setIsVisible(false);
             }}
+            className="px-6 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700"
           >
-            Accept All
+            Allow Cookies
           </Button>
         </div>
       </div>

@@ -18,6 +18,11 @@ const Footer = () => {
             <a href="#pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</a>
             <a href="#faq" className="text-gray-400 hover:text-white transition-colors">FAQ</a>
           </nav>
+
+          <nav className="flex flex-wrap justify-center gap-6">
+            <a href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+            <a href="/terms-of-use" className="text-gray-400 hover:text-white transition-colors">Terms of Use</a>
+          </nav>
           
           <p className="text-center text-gray-500">
             &copy; {currentYear} Lysticle. All rights reserved.
