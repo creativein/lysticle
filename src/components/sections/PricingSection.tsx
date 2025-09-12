@@ -40,14 +40,44 @@ const PricingTier = ({
         <p className="text-gray-600 mb-4">{description}</p>
 
         <div className="mb-6 flex flex-col items-center">
-          <div className="relative flex items-center justify-center">
-            <span className="text-4xl font-bold text-gray-900 mr-2">${price}</span>
-            <span className="absolute left-0 right-0 top-1/2 border-t-4 border-red-500 transform -translate-y-1/2"></span>
-            <span className="text-gray-600 ml-2">/month</span>
+          <div className="flex items-center justify-center">
+            <div className="relative">
+              <span className="text-4xl font-bold text-gray-300 mr-2">${price}</span>
+              <div className="absolute top-1/2 left-0 right-0 border-t-2 border-red-500 transform -rotate-12"></div>
+            </div>
+            <span className="text-gray-300 ml-2">/month</span>
           </div>
-          <span className="mt-2 px-3 py-1 rounded-full bg-gradient-to-r from-violet-500 to-pink-500 text-white font-semibold text-lg shadow-lg animate-pulse">
-            Free to use until Dec 2025!
-          </span>
+          <motion.div
+            initial={{ scale: 0.95 }}
+            animate={{ 
+              scale: 1,
+              boxShadow: [
+                "0 0 0 0 rgba(124, 58, 237, 0)",
+                "0 0 0 10px rgba(124, 58, 237, 0.1)",
+                "0 0 0 20px rgba(124, 58, 237, 0)",
+              ]
+            }}
+            transition={{ 
+              scale: {
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              },
+              boxShadow: {
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }
+            }}
+            className="mt-4"
+          >
+            <span className="px-4 py-2 bg-gradient-to-r from-violet-600 to-violet-800 text-white rounded-full font-semibold inline-block shadow-lg">
+              Free Until December 2025
+            </span>
+          </motion.div>
+          <span className="mt-3 text-sm text-gray-500">No credit card required</span>
         </div>
 
         <Button variant={isPopular ? 'primary' : 'outline'} fullWidth>
@@ -77,77 +107,70 @@ const PricingTier = ({
 const PricingSection = () => {
   const tiers = [
     {
-      name: "Basic",
+      name: "Starter",
       price: "29",
       description: "Perfect for bloggers and content creators",
       features: [
-        "Unlimited Traffic",
-        "10 Advertisers",
-        "3 Categories",
+        "Up to 50,000 monthly visitors",
+        "10 Active advertisers",
+        "5 Content categories",
         "Basic SEO optimization",
-        "Social sharing tools",
-        "Basic analytics dashboard",
+        "Social sharing integration",
+        "Real-time analytics dashboard",
         "Email support",
-        "2 Viral Templates",
-        "Lystical Branding",
-        "Click Tracking (Coming Soon)",
-        "Views Analytics (Coming Soon)"
+        "5 Premium templates",
+        "Community access"
       ],
       excluded: [
-        "Advanced affiliate integration",
-        "Custom domain",
+        "Custom domain support",
         "Advanced SEO tools",
         "Priority support",
         "White-label solution",
         "API access",
-        "Team collaboration tools",
-        "Social media automation",
-        "A/B testing",
-        "No Lystical Branding"
+        "Team collaboration"
       ],
       isPopular: false
     },
     {
-      name: "Pro",
+      name: "Professional",
       price: "79",
-      description: "Ideal for affiliate marketers and growing brands",
+      description: "Scale your affiliate marketing business",
       features: [
-        "Unlimited Traffic",
-        "30 Advertisers",
-        "10 Categories",
-        "Priority Support",
+        "Unlimited monthly visitors",
+        "30 Active advertisers",
+        "Unlimited categories",
         "Advanced SEO & schema markup",
-        "Advanced analytics",
-        "Social media automation (Coming Soon)",
-        "No Lystical Branding",
-        "Click Tracking (Coming Soon)",
-        "Views Analytics (Coming Soon)"
+        "Social media automation",
+        "Advanced analytics suite",
+        "Priority support",
+        "All premium templates",
+        "Custom domain support",
+        "No Lystical branding",
+        "A/B testing tools"
       ],
       excluded: [
         "White-label solution",
         "API access",
-        "Team collaboration tools"
+        "Team collaboration"
       ],
       isPopular: true
     },
     {
-      name: "Business",
+      name: "Enterprise",
       price: "199",
-      description: "For agencies and enterprise teams",
+      description: "Complete solution for agencies and teams",
       features: [
         "Unlimited listicle sites",
-        "All premium templates",
+        "Unlimited advertisers",
         "Enterprise SEO suite",
-        "Full affiliate network integration",
-        "Custom domain support",
-        "Advanced analytics & A/B testing",
-        "Priority support",
-        "Social media automation",
+        "Full affiliate API access",
         "White-label solution",
-        "API access",
         "Team collaboration tools",
-        "Click Tracking (Coming Soon)",
-        "Views Analytics (Coming Soon)"
+        "Custom integrations",
+        "Dedicated success manager",
+        "SLA support guarantee",
+        "Advanced security features",
+        "Custom reporting"
       ],
       isPopular: false
     }
@@ -164,10 +187,10 @@ const PricingSection = () => {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-            Choose your path to <span className="text-violet-600">conversion success</span>
+            Simple, transparent <span className="text-violet-600">pricing</span>
           </h2>
           <p className="text-xl text-gray-600">
-            Start driving traffic, engagement, and sales with proven listicle templates. All plans include everything you need to create viral content.
+            Choose the perfect plan for your needs. Upgrade or downgrade anytime, no contracts required.
           </p>
         </motion.div>
 
